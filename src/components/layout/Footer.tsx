@@ -35,8 +35,17 @@ const Footer = () => {
               <NavLink to="/attorneys" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Our Attorneys
               </NavLink>
-              <NavLink to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
-                About Us
+              <NavLink to="/case-results" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+                Case Results
+              </NavLink>
+              <NavLink to="/blog" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+                Blog
+              </NavLink>
+              <NavLink to="/resources" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+                Resources
+              </NavLink>
+              <NavLink to="/careers" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+                Careers
               </NavLink>
             </nav>
           </div>
