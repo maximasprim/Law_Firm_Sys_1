@@ -10,8 +10,9 @@ const Header = () => {
     { to: "/", label: "Home" },
     { to: "/practice-areas", label: "Practice Areas" },
     { to: "/attorneys", label: "Attorneys" },
-    { to: "/about", label: "About Us" },
-    { to: "/faq", label: "FAQ" },
+    { to: "/about", label: "About" },
+    { to: "/case-results", label: "Results" },
+    { to: "/blog", label: "Blog" },
     { to: "/contact", label: "Contact" },
   ];
 
@@ -46,12 +47,11 @@ const Header = () => {
           </nav>
 
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              Client Portal
-            </Button>
-            <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold">
-              Free Consultation
-            </Button>
+            <NavLink to="/book-consultation">
+              <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold">
+                Book Consultation
+              </Button>
+            </NavLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -81,12 +81,11 @@ const Header = () => {
                 </NavLink>
               ))}
               <div className="flex flex-col gap-3 mt-4 px-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  Client Portal
-                </Button>
-                <Button size="sm" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
-                  Free Consultation
-                </Button>
+                <NavLink to="/book-consultation" onClick={() => setMobileMenuOpen(false)}>
+                  <Button size="sm" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
+                    Book Consultation
+                  </Button>
+                </NavLink>
               </div>
             </nav>
           </div>
