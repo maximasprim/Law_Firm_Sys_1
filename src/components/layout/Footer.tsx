@@ -47,12 +47,12 @@ const Footer = () => {
               <NavLink to="/blog" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Blog
               </NavLink>
-              <NavLink to="/resources" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+              {/* <NavLink to="/resources" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Resources
               </NavLink>
               <NavLink to="/careers" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Careers
-              </NavLink>
+              </NavLink> */}
             </nav>
           </div>
 
