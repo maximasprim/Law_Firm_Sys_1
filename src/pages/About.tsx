@@ -29,13 +29,11 @@ const About = () => {
   ];
 
   const milestones = [
-    { year: "1985", event: "Premier Law Associates founded in New York City" },
-    { year: "1992", event: "Expanded to handle major corporate litigation" },
-    { year: "2000", event: "Opened offices in multiple states" },
-    { year: "2008", event: "Achieved landmark $50M settlement in class action case" },
-    { year: "2015", event: "Named Top Law Firm by multiple publications" },
-    { year: "2020", event: "Surpassed 5,000 cases won" },
-    { year: "2025", event: "Celebrating 40 years of excellence" },
+    { year: "2021", event: "Owino Kojo Advocates founded in Nairobi, Kenya" },
+    { year: "2022", event: "Expanded practice areas to include corporate and commercial law" },
+    { year: "2023", event: "Achieved significant wins in family law and property disputes" },
+    { year: "2024", event: "Recognized as a leading emerging law firm in Kenya" },
+    { year: "2025", event: "Continuing to serve clients across Kenya with excellence" },
   ];
 
   return (
@@ -45,10 +43,10 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
-              About Premier Law Associates
+              About Owino Kojo Advocates
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Four decades of legal excellence, trusted relationships, and unwavering commitment to justice.
+              Four years of legal excellence, trusted relationships, and unwavering commitment to justice in Kenya.
             </p>
           </div>
         </div>
@@ -64,13 +62,13 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Founded in 1985, Premier Law Associates began with a simple mission: to provide exceptional legal representation with integrity and dedication. What started as a small practice in New York City has grown into a leading multi-practice law firm serving clients across the nation.
+                  Founded in 2021, Owino Kojo Advocates began with a simple mission: to provide exceptional legal representation with integrity and dedication. What started as a commitment to serve the Kenyan community has grown into a trusted law firm serving clients across the nation.
                 </p>
                 <p>
-                  For nearly four decades, we've built our reputation on a foundation of legal excellence, ethical practice, and unwavering commitment to our clients. Our team of experienced attorneys brings together diverse expertise across multiple practice areas, allowing us to serve individuals, businesses, and organizations with comprehensive legal solutions.
+                  Since our establishment, we've built our reputation on a foundation of legal excellence, ethical practice, and unwavering commitment to our clients. Our team of experienced advocates brings together diverse expertise across multiple practice areas, allowing us to serve individuals, businesses, and organizations with comprehensive legal solutions tailored to the Kenyan legal landscape.
                 </p>
                 <p>
-                  Today, with over 50 attorneys and a support staff dedicated to excellence, we continue to set the standard for legal representation. Our success is measured not just in cases won, but in the lasting relationships we build and the positive impact we make in our clients' lives.
+                  Today, with a dedicated team of advocates and support staff committed to excellence, we continue to set the standard for legal representation in Kenya. Our success is measured not just in cases won, but in the lasting relationships we build and the positive impact we make in our clients' lives.
                 </p>
               </div>
             </div>
@@ -131,7 +129,7 @@ const About = () => {
               Our Journey
             </h2>
             <p className="text-xl text-muted-foreground">
-              Key milestones in our 40-year history
+              Key milestones in our journey since 2021
             </p>
           </div>
 
@@ -169,9 +167,9 @@ const About = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             {[
               { icon: TrendingUp, value: "98%", label: "Success Rate" },
-              { icon: Users, value: "50+", label: "Attorneys" },
-              { icon: Award, value: "100+", label: "Awards" },
-              { icon: Globe, value: "10+", label: "States" },
+              { icon: Users, value: "10+", label: "Advocates" },
+              { icon: Award, value: "5+", label: "Awards" },
+              { icon: Globe, value: "47", label: "Counties Served" },
             ].map((stat, index) => (
               <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
                 <stat.icon className="h-12 w-12 mx-auto mb-4 opacity-80" />
@@ -193,7 +191,7 @@ const About = () => {
               Ready to Work With Us?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Experience the Premier Law difference. Schedule your free consultation today.
+              Experience the Owino Kojo Advocates difference. Schedule your free consultation today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <NavLink to="/contact">

@@ -8,63 +8,90 @@ import { useState } from "react";
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const categories = ["All", "Corporate Law", "Litigation", "Family Law", "Real Estate", "Tax Law"];
+  const categories = ["All", "Corporate Law", "Litigation", "Family Law", "Land & Property", "Employment Law"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const blogPosts = [
     {
-      title: "Understanding the New Corporate Compliance Requirements for 2025",
-      excerpt: "Recent regulatory changes require businesses to update their compliance frameworks. Learn what your company needs to know.",
+      title: "Understanding Kenya's New Data Protection Regulations 2024",
+      excerpt: "Recent amendments to the Data Protection Act require businesses to update their compliance frameworks. Learn what your company needs to know.",
       category: "Corporate Law",
-      author: "Michael Harrison",
-      date: "March 15, 2025",
+      author: "James Owino",
+      date: "November 15, 2024",
       readTime: "8 min read",
       image: "corporate",
     },
     {
-      title: "Top 5 Mistakes to Avoid in Commercial Litigation",
+      title: "Top 5 Mistakes to Avoid in Commercial Litigation in Kenya",
       excerpt: "Commercial disputes can be costly. Discover the most common pitfalls and how to avoid them in your litigation strategy.",
       category: "Litigation",
-      author: "Sarah Chen",
-      date: "March 12, 2025",
+      author: "Peter Mwangi",
+      date: "November 10, 2024",
       readTime: "6 min read",
       image: "litigation",
     },
     {
-      title: "Estate Planning Essentials: Protecting Your Family's Future",
-      excerpt: "A comprehensive guide to creating a robust estate plan that ensures your wishes are honored and your loved ones are protected.",
-      category: "Estate Planning",
-      author: "Emily Thompson",
-      date: "March 10, 2025",
+      title: "Succession Planning in Kenya: Protecting Your Family's Future",
+      excerpt: "A comprehensive guide to creating a robust succession plan under the Law of Succession Act that ensures your wishes are honored.",
+      category: "Family Law",
+      author: "Grace Kojo",
+      date: "November 5, 2024",
       readTime: "10 min read",
       image: "estate",
     },
     {
-      title: "Navigating Child Custody Laws: A Parent's Guide",
-      excerpt: "Understanding custody arrangements, parenting time, and what courts consider when making custody decisions.",
+      title: "Navigating Child Custody Laws in Kenya: A Parent's Guide",
+      excerpt: "Understanding custody arrangements, parenting time, and what Kenyan courts consider when making custody decisions under the Children Act.",
       category: "Family Law",
-      author: "Emily Thompson",
-      date: "March 8, 2025",
+      author: "Grace Kojo",
+      date: "October 28, 2024",
       readTime: "7 min read",
       image: "family",
     },
     {
-      title: "Commercial Real Estate Transactions: Due Diligence Checklist",
-      excerpt: "Essential steps and considerations for successful commercial property acquisitions and sales.",
-      category: "Real Estate",
-      author: "Robert Williams",
-      date: "March 5, 2025",
+      title: "Land Registration Process in Kenya: Complete Guide 2024",
+      excerpt: "Essential steps and considerations for successful land transactions, title transfers, and property acquisitions in Kenya.",
+      category: "Land & Property",
+      author: "David Kamau",
+      date: "October 20, 2024",
       readTime: "9 min read",
       image: "realestate",
     },
     {
-      title: "Tax Strategies for Small Business Owners in 2025",
-      excerpt: "Maximize your deductions and minimize your tax liability with these proven strategies for entrepreneurs.",
-      category: "Tax Law",
-      author: "David Martinez",
-      date: "March 1, 2025",
+      title: "Employment Law Changes: What Kenyan Employers Need to Know",
+      excerpt: "Recent amendments to the Employment Act and what they mean for employers and employees in Kenya.",
+      category: "Employment Law",
+      author: "Anne Wanjiku",
+      date: "October 15, 2024",
       readTime: "5 min read",
       image: "tax",
+    },
+    {
+      title: "Resolving Land Disputes in Kenya: Your Legal Options",
+      excerpt: "Understanding the Environment and Land Court procedures and alternative dispute resolution methods for land conflicts.",
+      category: "Land & Property",
+      author: "David Kamau",
+      date: "October 10, 2024",
+      readTime: "8 min read",
+      image: "realestate",
+    },
+    {
+      title: "Understanding KRA Tax Compliance for Small Businesses",
+      excerpt: "Navigate Kenya Revenue Authority requirements and maximize your deductions while staying compliant with tax laws.",
+      category: "Corporate Law",
+      author: "James Owino",
+      date: "October 5, 2024",
+      readTime: "6 min read",
+      image: "tax",
+    },
+    {
+      title: "Your Rights Under the Constitution of Kenya 2010",
+      excerpt: "An overview of fundamental rights and freedoms guaranteed by Kenya's constitution and how to protect them.",
+      category: "Litigation",
+      author: "Mary Achieng",
+      date: "September 28, 2024",
+      readTime: "7 min read",
+      image: "litigation",
     },
   ];
 
@@ -85,7 +112,7 @@ const Blog = () => {
               Legal Insights & News
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Expert analysis, legal updates, and practical guidance from our experienced attorneys
+              Expert analysis, legal updates, and practical guidance from our experienced advocates on Kenyan law
             </p>
           </div>
         </div>
@@ -195,7 +222,7 @@ const Blog = () => {
               Stay Informed
             </h2>
             <p className="text-lg opacity-90 mb-8">
-              Subscribe to our newsletter for legal updates, insights, and exclusive content delivered to your inbox.
+              Subscribe to our newsletter for legal updates, insights on Kenyan law, and exclusive content delivered to your inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <Input

@@ -151,7 +151,7 @@ const Careers = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl font-display font-bold text-primary mb-4">
-              Why Premier Law Associates?
+              Why Owino Kojo Advocates?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               We invest in our people and create an environment where talent thrives

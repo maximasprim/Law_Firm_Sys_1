@@ -9,7 +9,7 @@ const Testimonials = () => {
       role: "CEO, TechCorp",
       company: "Technology",
       rating: 5,
-      content: "Premier Law Associates provided exceptional guidance during our $50M merger. Their expertise in corporate law and attention to detail ensured a smooth transaction. Michael Harrison and his team were responsive, knowledgeable, and truly understood our business needs.",
+      content: "Owino Kojo Advocates provided exceptional guidance during our $50M merger. Their expertise in corporate law and attention to detail ensured a smooth transaction. Michael Harrison and his team were responsive, knowledgeable, and truly understood our business needs.",
       category: "Corporate Law",
       year: "2024",
     },
@@ -109,7 +109,7 @@ const Testimonials = () => {
               Client Testimonials
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Read what our clients say about their experience working with Premier Law Associates
+              Read what our clients say about their experience working with Owino Kojo Advocates
             </p>
           </div>
         </div>

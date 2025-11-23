@@ -2,6 +2,7 @@ import { Scale, Menu, X } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import logo from '@/assets/logo.png';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -9,7 +10,7 @@ const Header = () => {
   const navItems = [
     { to: "/", label: "Home" },
     { to: "/practice-areas", label: "Practice Areas" },
-    { to: "/attorneys", label: "Attorneys" },
+    { to: "/advocates", label: "Advocates" },
     { to: "/about", label: "About" },
     { to: "/case-results", label: "Results" },
     { to: "/blog", label: "Blog" },
@@ -21,12 +22,17 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           <NavLink to="/" className="flex items-center gap-3 group">
-            <div className="p-2 bg-primary rounded-lg group-hover:shadow-gold transition-all duration-300">
-              <Scale className="h-6 w-6 text-primary-foreground" />
+            <div className="p-1 rounded-lg group-hover:shadow-gold transition-all duration-300">
+              {/* <Scale className="h-6 w-6 text-primary-foreground" /> */}
+              <img
+              src={logo}
+              alt="Owino Kojo Advocates Logo"
+              className="h-8 w-8 sm:h-8 sm:w-8"
+            />
             </div>
             <div>
-              <span className="text-xl font-display font-bold text-primary">Premier Law</span>
-              <span className="block text-xs text-muted-foreground font-body">Associates</span>
+              <span className="text-xl font-display font-bold text-primary">Owino Kojo</span>
+              <span className="block text-xs text-muted-foreground font-body">Advocates</span>
             </div>
           </NavLink>
 

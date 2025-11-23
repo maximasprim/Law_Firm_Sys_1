@@ -30,19 +30,19 @@ const Home = () => {
 
   const testimonials = [
     {
-      name: "Sarah Mitchell",
-      role: "CEO, TechCorp",
-      content: "Premier Law Associates provided exceptional guidance during our merger. Their expertise and professionalism are unmatched.",
+      name: "Michael Maxwell",
+      role: "CEO, AgriMus",
+      content: "Owino Kojo Advocates provided exceptional guidance during our merger. Their expertise and professionalism are unmatched.",
       rating: 5,
     },
     {
-      name: "Robert Chen",
+      name: "Mercy Gladwell",
       role: "Business Owner",
       content: "The team's attention to detail and strategic thinking helped us navigate complex corporate challenges successfully.",
       rating: 5,
     },
     {
-      name: "Jennifer Adams",
+      name: "Kyla Joy",
       role: "Private Client",
       content: "Compassionate, knowledgeable, and always available. They made a difficult family law matter much easier to handle.",
       rating: 5,
@@ -57,7 +57,7 @@ const Home = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
         >
-          <div className="absolute inset-0 gradient-hero opacity-90" />
+          <div className="absolute inset-0 gradient-hero opacity-40" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -66,14 +66,16 @@ const Home = () => {
               Excellence in Legal Representation
             </h1>
             <p className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
-              Trusted advisors providing comprehensive legal solutions for individuals and businesses since 1985
+              Trusted advisors providing comprehensive legal solutions for individuals and businesses since 2021
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold text-lg px-8">
+              <NavLink to="/book-consultation">
+              <Button size="lg" className="bg-accent border border-black text-accent-foreground hover:bg-accent/80 shadow-gold text-lg px-8">
                 Free Consultation
               </Button>
+              </NavLink>
               <NavLink to="/practice-areas">
-                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 text-lg px-8">
+                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground bg-gray-400 hover:bg-primary-foreground/90 text-lg px-8">
                   Our Services
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -88,10 +90,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "38+", label: "Years Experience" },
-              { value: "5,000+", label: "Cases Won" },
-              { value: "50+", label: "Expert Attorneys" },
-              { value: "98%", label: "Success Rate" },
+              { value: "5+", label: "Years Experience" },
+              { value: "300+", label: "Cases Won" },
+              { value: "10+", label: "Expert Advocates" },
+              { value: "95%", label: "Success Rate" },
             ].map((stat, index) => (
               <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
                 <div className="text-4xl md:text-5xl font-display font-bold text-primary mb-2">
@@ -155,14 +157,14 @@ const Home = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in">
               <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">
-                Why Choose Premier Law Associates?
+                Why Choose Owino Kojo Advocates?
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                For nearly four decades, we've been setting the standard for legal excellence. Our commitment to our clients goes beyond winning cases—we build lasting relationships based on trust, integrity, and results.
+                For years now, we've been setting the standard for legal excellence. Our commitment to our clients goes beyond winning cases—we build lasting relationships based on trust, integrity, and results.
               </p>
               <div className="space-y-4">
                 {[
-                  "Experienced attorneys with proven track records",
+                  "Experienced advocates with proven track records",
                   "Personalized attention to every case",
                   "Transparent communication throughout the process",
                   "24/7 emergency legal services available",
@@ -245,7 +247,7 @@ const Home = () => {
               Ready to Discuss Your Legal Needs?
             </h2>
             <p className="text-xl mb-8 opacity-90">
-              Schedule a free consultation with one of our experienced attorneys today
+              Schedule a free consultation with one of our experienced advocates today
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <NavLink to="/contact">
@@ -253,8 +255,8 @@ const Home = () => {
                   Get Started Today
                 </Button>
               </NavLink>
-              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 text-lg px-8">
-                Call (212) 555-0123
+              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground bg-gray-400 hover:bg-primary-foreground/80 text-lg px-8">
+                Call (254) 727 783 214
               </Button>
             </div>
           </div>

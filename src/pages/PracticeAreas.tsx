@@ -18,79 +18,152 @@ import { NavLink } from "@/components/NavLink";
 
 const PracticeAreas = () => {
   const practiceAreas = [
-    {
-      icon: Building2,
-      title: "Corporate Law",
-      description: "Comprehensive legal solutions for businesses of all sizes, including mergers and acquisitions, corporate governance, and contract negotiations.",
-      features: ["M&A Advisory", "Corporate Governance", "Contract Review", "Compliance"],
-    },
-    {
-      icon: Shield,
-      title: "Litigation & Dispute Resolution",
-      description: "Expert representation in complex civil, commercial, and criminal litigation matters with a proven track record of success.",
-      features: ["Civil Litigation", "Commercial Disputes", "Arbitration", "Appeals"],
-    },
-    {
-      icon: Users,
-      title: "Family Law",
-      description: "Compassionate guidance through divorce, child custody, adoption, and all family-related legal matters.",
-      features: ["Divorce", "Child Custody", "Adoption", "Prenuptial Agreements"],
-    },
-    {
-      icon: Award,
-      title: "Estate Planning",
-      description: "Protect your legacy and ensure your wishes are honored with comprehensive estate planning and trust services.",
-      features: ["Wills & Trusts", "Probate", "Elder Law", "Asset Protection"],
-    },
-    {
-      icon: Home,
-      title: "Real Estate Law",
-      description: "Full-service real estate legal support for residential and commercial transactions, disputes, and development.",
-      features: ["Property Transactions", "Lease Agreements", "Zoning", "Title Issues"],
-    },
-    {
-      icon: FileText,
-      title: "Intellectual Property",
-      description: "Protect your innovations, brands, and creative works with comprehensive IP legal services.",
-      features: ["Patents", "Trademarks", "Copyrights", "IP Litigation"],
-    },
-    {
-      icon: Briefcase,
-      title: "Employment Law",
-      description: "Expert guidance on workplace issues for both employers and employees.",
-      features: ["Employment Contracts", "Wrongful Termination", "Discrimination", "Wage Disputes"],
-    },
-    {
-      icon: HeartHandshake,
-      title: "Personal Injury",
-      description: "Fight for fair compensation after accidents, injuries, and wrongful death cases.",
-      features: ["Auto Accidents", "Medical Malpractice", "Workplace Injuries", "Product Liability"],
-    },
-    {
-      icon: Gavel,
-      title: "Criminal Defense",
-      description: "Aggressive defense representation for all types of criminal charges.",
-      features: ["White Collar Crime", "DUI/DWI", "Drug Offenses", "Assault & Battery"],
-    },
-    {
-      icon: TrendingUp,
-      title: "Tax Law",
-      description: "Navigate complex tax issues with strategic planning and dispute resolution.",
-      features: ["Tax Planning", "IRS Disputes", "Tax Litigation", "International Tax"],
-    },
-    {
-      icon: Car,
-      title: "Immigration Law",
-      description: "Comprehensive immigration services for individuals, families, and businesses.",
-      features: ["Visas", "Green Cards", "Citizenship", "Deportation Defense"],
-    },
-    {
-      icon: Scale,
-      title: "Bankruptcy",
-      description: "Strategic solutions for debt relief and financial restructuring.",
-      features: ["Chapter 7", "Chapter 11", "Chapter 13", "Creditor Rights"],
-    },
-  ];
+  {
+    icon: Building2,
+    title: "Corporate & Commercial Law",
+    description:
+      "Legal advisory for companies, startups, and SMEs in Kenya, including compliance with the Companies Act, commercial contracts, and business transactions.",
+    features: [
+      "Company Registration & Compliance",
+      "Commercial Contracts",
+      "Mergers & Acquisitions",
+      "Corporate Governance",
+    ],
+  },
+  {
+    icon: Shield,
+    title: "Litigation & Dispute Resolution",
+    description:
+      "Representation before Kenyan courts, tribunals, and arbitration panels in civil, commercial, and constitutional matters.",
+    features: [
+      "Civil Litigation",
+      "Commercial Disputes",
+      "Arbitration & Mediation",
+      "Constitutional Petitions",
+    ],
+  },
+  {
+    icon: Users,
+    title: "Family & Child Law",
+    description:
+      "Legal support for family-related matters under the Marriage Act, Children Act, and Matrimonial Property Act.",
+    features: [
+      "Divorce & Separation",
+      "Child Custody & Maintenance",
+      "Adoption Services",
+      "Matrimonial Property",
+    ],
+  },
+  {
+    icon: Award,
+    title: "Estate Planning & Succession",
+    description:
+      "Guidance on wills, succession matters, and estate administration under Kenyan succession laws.",
+    features: [
+      "Wills & Trusts",
+      "Probate & Letters of Administration",
+      "Estate Distribution",
+      "Asset Protection",
+    ],
+  },
+  {
+    icon: Home,
+    title: "Real Estate & Property Law",
+    description:
+      "Legal assistance for land transactions, property disputes, and conveyancing in line with the Land Act and Land Registration Act.",
+    features: [
+      "Conveyancing",
+      "Lease Agreements",
+      "Land Disputes",
+      "Title Search & Verification",
+    ],
+  },
+  {
+    icon: FileText,
+    title: "Intellectual Property Law",
+    description:
+      "Protection of creative works, brands, and innovations under KIPI (Kenya Industrial Property Institute) regulations.",
+    features: [
+      "Trademark Registration",
+      "Copyright Protection",
+      "Patent Applications",
+      "IP Enforcement",
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: "Employment & Labour Law",
+    description:
+      "Representation and advisory under the Employment Act, Labour Relations Act, and workplace regulations.",
+    features: [
+      "Employment Contracts",
+      "Unfair Termination Claims",
+      "Workplace Disputes",
+      "Health & Safety Compliance",
+    ],
+  },
+  {
+    icon: HeartHandshake,
+    title: "Personal Injury & Compensation",
+    description:
+      "Claims for accidents, medical negligence, workplace injuries, and insurance disputes.",
+    features: [
+      "Road Accident Claims",
+      "Medical Negligence",
+      "Workplace Injury Claims",
+      "Insurance Disputes",
+    ],
+  },
+  {
+    icon: Gavel,
+    title: "Criminal Defense",
+    description:
+      "Defense representation in criminal matters before Kenyan courts, including bail applications and trial defense.",
+    features: [
+      "Bail & Bond Applications",
+      "White Collar Crime",
+      "Sexual & Gender-Based Offenses",
+      "Drug-Related Offenses",
+    ],
+  },
+  {
+    icon: TrendingUp,
+    title: "Tax Advisory & Compliance",
+    description:
+      "Support with KRA compliance, tax planning, and disputes before the Tax Appeals Tribunal.",
+    features: [
+      "Tax Planning",
+      "KRA Audits & Objections",
+      "Tax Appeals Tribunal Representation",
+      "Corporate Tax Advisory",
+    ],
+  },
+  {
+    icon: Car,
+    title: "Immigration & Citizenship",
+    description:
+      "Services for permits, visas, citizenship, and immigration appeals under Kenyan immigration laws.",
+    features: [
+      "Work Permits & Passes",
+      "Visa Applications",
+      "Citizenship Applications",
+      "Immigration Appeals",
+    ],
+  },
+  {
+    icon: Scale,
+    title: "Insolvency & Debt Recovery",
+    description:
+      "Debt collection, corporate restructuring, and insolvency services for individuals and companies.",
+    features: [
+      "Debt Recovery",
+      "Corporate Insolvency",
+      "Bankruptcy Applications",
+      "Creditors’ Rights",
+    ],
+  },
+];
+
 
   return (
     <div className="flex flex-col">
@@ -102,7 +175,7 @@ const PracticeAreas = () => {
               Practice Areas
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Comprehensive legal services across multiple practice areas. Our experienced attorneys are ready to guide you through your legal challenges.
+              Comprehensive legal services across multiple practice areas. Our experienced advocates are ready to guide you through your legal challenges.
             </p>
           </div>
         </div>
@@ -154,17 +227,17 @@ const PracticeAreas = () => {
               Need Legal Assistance?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Our experienced attorneys are here to help. Schedule a free consultation to discuss your legal needs.
+              Our experienced advocates are here to help. Schedule a free consultation to discuss your legal needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <NavLink to="/contact">
+              <NavLink to="/book-consultation">
                 <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold">
                   Free Consultation
                 </Button>
               </NavLink>
-              <NavLink to="/attorneys">
+              <NavLink to="/advocates">
                 <Button size="lg" variant="outline">
-                  Meet Our Attorneys
+                  Meet Our Advocates
                 </Button>
               </NavLink>
             </div>

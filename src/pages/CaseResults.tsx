@@ -2,84 +2,109 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, TrendingUp, Award, DollarSign } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const CaseResults = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const categories = ["All", "Corporate", "Litigation", "Personal Injury", "Real Estate", "Family Law", "Employment"];
+  const categories = ["All", "Corporate", "Litigation", "Land & Property", "Family Law", "Employment", "Criminal Defense"];
 
   const caseResults = [
     {
-      title: "$50 Million Class Action Settlement",
+      title: "KSh 45M Commercial Dispute Victory",
       category: "Litigation",
-      description: "Successfully represented 10,000+ consumers in a securities fraud class action lawsuit against a Fortune 500 company.",
-      outcome: "Settlement",
-      amount: "$50M",
+      description: "Successfully represented client in a complex commercial contract dispute at the High Court of Kenya, securing full compensation plus costs.",
+      outcome: "Judgment Granted",
+      amount: "KSh 45M",
       year: "2024",
       highlight: true,
     },
     {
-      title: "Landmark Corporate Merger Approval",
+      title: "Major Corporate Merger Advisory",
       category: "Corporate",
-      description: "Advised on a $2.3 billion cross-border merger, navigating complex regulatory requirements across three jurisdictions.",
+      description: "Advised on a KSh 800M merger between two leading Kenyan companies, ensuring compliance with Competition Authority of Kenya regulations.",
       outcome: "Approved",
-      amount: "$2.3B",
+      amount: "KSh 800M",
       year: "2024",
     },
     {
-      title: "Medical Malpractice Jury Verdict",
-      category: "Personal Injury",
-      description: "Secured jury verdict for client who suffered permanent injuries due to surgical negligence.",
-      outcome: "Verdict",
-      amount: "$12M",
+      title: "Land Title Dispute Resolution",
+      category: "Land & Property",
+      description: "Won landmark case restoring rightful ownership of prime Nairobi property worth KSh 120M to our client after decade-long dispute.",
+      outcome: "Title Restored",
+      amount: "KSh 120M",
       year: "2024",
     },
     {
-      title: "Commercial Real Estate Dispute Resolution",
-      category: "Real Estate",
-      description: "Won arbitration for developer in $8M construction defect dispute, recovering full damages plus costs.",
-      outcome: "Arbitration Win",
-      amount: "$8M",
-      year: "2024",
-    },
-    {
-      title: "Executive Wrongful Termination",
+      title: "Employment Tribunal Success",
       category: "Employment",
-      description: "Obtained substantial settlement for C-suite executive wrongfully terminated and denied severance package.",
-      outcome: "Settlement",
-      amount: "$5.2M",
-      year: "2023",
+      description: "Secured KSh 8.5M compensation for client in wrongful dismissal case at the Employment and Labour Relations Court.",
+      outcome: "Compensation Awarded",
+      amount: "KSh 8.5M",
+      year: "2024",
     },
     {
-      title: "Patent Infringement Defense Victory",
-      category: "Litigation",
-      description: "Successfully defended technology company against patent troll, resulting in dismissal with prejudice.",
-      outcome: "Dismissal",
-      amount: "Defense",
-      year: "2023",
-    },
-    {
-      title: "Complex Custody Battle Victory",
-      category: "Family Law",
-      description: "Secured primary custody for client in high-net-worth divorce involving international custody dispute.",
-      outcome: "Custody Granted",
+      title: "High-Profile Criminal Acquittal",
+      category: "Criminal Defense",
+      description: "Successfully defended client in complex fraud case, resulting in full acquittal after comprehensive evidence presentation.",
+      outcome: "Acquitted",
       amount: "Victory",
+      year: "2024",
+    },
+    {
+      title: "Matrimonial Property Settlement",
+      category: "Family Law",
+      description: "Negotiated favorable settlement in high-net-worth divorce, securing KSh 35M in assets and property for our client.",
+      outcome: "Settlement Reached",
+      amount: "KSh 35M",
       year: "2023",
     },
     {
-      title: "Securities Litigation Defense",
+      title: "Succession Dispute Victory",
+      category: "Family Law",
+      description: "Won succession case securing our client's rightful inheritance of family estate valued at KSh 25M.",
+      outcome: "Inheritance Secured",
+      amount: "KSh 25M",
+      year: "2023",
+    },
+    {
+      title: "Real Estate Development Deal",
+      category: "Land & Property",
+      description: "Facilitated acquisition and conveyancing of KSh 200M mixed-use development property in Westlands, Nairobi.",
+      outcome: "Transaction Completed",
+      amount: "KSh 200M",
+      year: "2023",
+    },
+    {
+      title: "Corporate Tax Dispute Resolution",
       category: "Corporate",
-      description: "Defended hedge fund in SEC investigation, achieving no-penalty resolution.",
-      outcome: "No Penalties",
-      amount: "Resolved",
+      description: "Successfully represented company in KRA tax dispute, reducing assessed tax liability by KSh 18M through negotiation.",
+      outcome: "Liability Reduced",
+      amount: "KSh 18M",
       year: "2023",
     },
     {
-      title: "Product Liability Settlement",
-      category: "Personal Injury",
-      description: "Negotiated settlement for multiple clients injured by defective consumer product.",
-      outcome: "Settlement",
-      amount: "$4.8M",
+      title: "Employment Discrimination Case",
+      category: "Employment",
+      description: "Won discrimination case at Employment Court, securing compensation and reinstatement for wrongfully terminated employee.",
+      outcome: "Reinstated + Compensation",
+      amount: "KSh 4.2M",
       year: "2023",
+    },
+    {
+      title: "Land Acquisition Appeal Success",
+      category: "Land & Property",
+      description: "Successfully appealed government land acquisition valuation, securing additional KSh 12M compensation for client.",
+      outcome: "Appeal Allowed",
+      amount: "KSh 12M",
+      year: "2022",
+    },
+    {
+      title: "Business Partnership Dissolution",
+      category: "Corporate",
+      description: "Negotiated amicable dissolution of business partnership, protecting client's interests worth KSh 30M.",
+      outcome: "Settlement Reached",
+      amount: "KSh 30M",
+      year: "2022",
     },
   ];
 
@@ -88,10 +113,10 @@ const CaseResults = () => {
     : caseResults.filter(result => result.category === selectedCategory);
 
   const stats = [
-    { icon: Trophy, value: "$500M+", label: "Total Recovered" },
-    { icon: TrendingUp, value: "98%", label: "Success Rate" },
-    { icon: Award, value: "5,000+", label: "Cases Won" },
-    { icon: DollarSign, value: "$50M", label: "Largest Settlement" },
+    { icon: Trophy, value: "KSh 500M+", label: "Total Value Recovered" },
+    { icon: TrendingUp, value: "95%", label: "Success Rate" },
+    { icon: Award, value: "300+", label: "Cases Won" },
+    { icon: DollarSign, value: "KSh 120M", label: "Largest Property Case" },
   ];
 
   return (
@@ -104,7 +129,7 @@ const CaseResults = () => {
               Case Results & Victories
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              A proven track record of success achieving exceptional outcomes for our clients
+              A proven track record of success achieving exceptional outcomes for our clients across Kenya
             </p>
           </div>
         </div>
@@ -226,11 +251,13 @@ const CaseResults = () => {
               Our proven track record speaks for itself. Schedule a free consultation to discuss your case.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/book-consultation">
               <button className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold px-8 py-3 rounded-md font-semibold">
                 Free Consultation
               </button>
+              </Link>
               <button className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 px-8 py-3 rounded-md font-semibold">
-                Call (212) 555-0123
+                Call +254 727 783 214
               </button>
             </div>
           </div>

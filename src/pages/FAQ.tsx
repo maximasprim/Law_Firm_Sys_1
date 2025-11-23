@@ -10,7 +10,7 @@ const FAQ = () => {
       category: "General Questions",
       questions: [
         {
-          q: "What areas of law does Premier Law Associates practice?",
+          q: "What areas of law does Owino Kojo Advocates practice?",
           a: "We practice in multiple areas including corporate law, litigation, family law, estate planning, real estate, intellectual property, employment law, personal injury, criminal defense, tax law, immigration, and bankruptcy. Our diverse team of attorneys brings expertise across all major legal practice areas.",
         },
         {

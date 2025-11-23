@@ -59,7 +59,7 @@ const BookConsultation = () => {
               Book Your Free Consultation
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Schedule a complimentary consultation with one of our experienced attorneys. No obligations, just expert legal guidance.
+              Schedule a complimentary consultation with one of our experienced advocates. No obligations, just expert legal guidance.
             </p>
           </div>
         </div>
@@ -286,12 +286,12 @@ const BookConsultation = () => {
                 {
                   step: "2",
                   title: "Preparation",
-                  description: "We'll review your case details and match you with the best attorney for your needs.",
+                  description: "We'll review your case details and match you with the best advocate for your needs.",
                 },
                 {
                   step: "3",
                   title: "Consultation",
-                  description: "Meet with your attorney to discuss your case and explore your legal options.",
+                  description: "Meet with your advocate to discuss your case and explore your legal options.",
                 },
               ].map((item, index) => (
                 <div key={index} className="text-center animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>

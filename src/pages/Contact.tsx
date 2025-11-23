@@ -49,7 +49,7 @@ const Contact = () => {
               Contact Us
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Get in touch with our legal experts. We're here to help you navigate your legal challenges.
+              Get in touch with our legal experts. We're here to help you navigate your legal challenges in Kenya.
             </p>
           </div>
         </div>
@@ -63,22 +63,22 @@ const Contact = () => {
               {
                 icon: MapPin,
                 title: "Visit Us",
-                content: "123 Legal Plaza, Suite 500\nNew York, NY 10001",
+                content: "West End Towers, 2nd Floor\nWaiyaki Way, Westlands",
               },
               {
                 icon: Phone,
                 title: "Call Us",
-                content: "(212) 555-0123\n24/7 Emergency Line",
+                content: "+254 727 783 214\n+254 202 270 000",
               },
               {
                 icon: Mail,
                 title: "Email Us",
-                content: "info@premierlaw.com\nconsult@premierlaw.com",
+                content: "info@owinokojoadvocates.com\nconsult@owinokojoadvocates.com",
               },
               {
                 icon: Clock,
                 title: "Office Hours",
-                content: "Mon-Fri: 9AM - 6PM\nSat: 10AM - 2PM",
+                content: "Mon-Fri: 8AM - 5PM\nSat: 10AM - 2PM",
               },
             ].map((item, index) => (
               <Card key={index} className="text-center hover:shadow-elegant transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
@@ -109,10 +109,10 @@ const Contact = () => {
                 Send Us a Message
               </h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                Fill out the form below and one of our experienced attorneys will get back to you within 24 hours.
+                Fill out the form below and one of our experienced advocates will get back to you within 24 hours.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
@@ -155,6 +155,7 @@ const Contact = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
+                    placeholder="+254 7XX XXX XXX"
                     className="mt-2"
                   />
                 </div>
@@ -167,11 +168,12 @@ const Contact = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="consultation">Free Consultation</SelectItem>
-                      <SelectItem value="corporate">Corporate Law</SelectItem>
-                      <SelectItem value="litigation">Litigation</SelectItem>
-                      <SelectItem value="family">Family Law</SelectItem>
-                      <SelectItem value="estate">Estate Planning</SelectItem>
-                      <SelectItem value="real-estate">Real Estate</SelectItem>
+                      <SelectItem value="corporate">Corporate & Commercial Law</SelectItem>
+                      <SelectItem value="litigation">Litigation & Dispute Resolution</SelectItem>
+                      <SelectItem value="family">Family & Matrimonial Law</SelectItem>
+                      <SelectItem value="land">Land & Property Law</SelectItem>
+                      <SelectItem value="employment">Employment & Labour Law</SelectItem>
+                      <SelectItem value="criminal">Criminal Defense</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -191,13 +193,13 @@ const Contact = () => {
                 </div>
 
                 <Button 
-                  type="submit" 
+                  onClick={handleSubmit}
                   size="lg" 
                   className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold"
                 >
                   Send Message
                 </Button>
-              </form>
+              </div>
             </div>
 
             {/* Additional Information */}
@@ -210,11 +212,12 @@ const Contact = () => {
                   <ul className="space-y-3">
                     {[
                       "Free initial consultation",
-                      "24/7 emergency legal services",
-                      "Experienced attorneys across all practice areas",
-                      "Transparent communication",
+                      "Experienced advocates across all practice areas",
+                      "Deep understanding of Kenyan law and legal system",
+                      "Transparent communication and regular case updates",
                       "Competitive rates and flexible payment options",
-                      "98% client satisfaction rate",
+                      "95% client satisfaction rate",
+                      "Serving clients across all 47 counties in Kenya",
                     ].map((item, index) => (
                       <li key={index} className="flex items-start gap-3">
                         <span className="h-2 w-2 rounded-full bg-accent mt-2 flex-shrink-0" />
@@ -228,16 +231,16 @@ const Contact = () => {
               <Card className="gradient-hero text-primary-foreground">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-display font-bold mb-4">
-                    Emergency Legal Services
+                    Need Urgent Legal Assistance?
                   </h3>
                   <p className="opacity-90 mb-6">
-                    Facing an urgent legal matter? Our attorneys are available 24/7 for emergency consultations.
+                    Facing an urgent legal matter? Contact us immediately for prompt legal assistance and consultation.
                   </p>
                   <Button 
                     size="lg" 
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                   >
-                    Call Now: (212) 555-0123
+                    Call Now: +254 727 783 214
                   </Button>
                 </CardContent>
               </Card>
@@ -250,11 +253,18 @@ const Contact = () => {
       <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-8 text-center">
+              Find Us in Nairobi
+            </h2>
             <div className="aspect-video rounded-2xl overflow-hidden shadow-elegant bg-primary/5 flex items-center justify-center">
               <div className="text-center">
                 <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  Interactive map would be integrated here
+                <p className="text-muted-foreground mb-2 font-semibold">
+                  Owino Kojo Advocates
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  West End Towers<br />
+                  2nd Floor, Waiyaki Way, Westlands
                 </p>
               </div>
             </div>

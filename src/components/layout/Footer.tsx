@@ -1,5 +1,6 @@
 import { Scale, Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
+import logo from '@/assets/logo.png';
 
 const Footer = () => {
   return (
@@ -9,16 +10,21 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-accent rounded-lg">
-                <Scale className="h-6 w-6 text-accent-foreground" />
+              <div className="p-1 bg-gray-50 rounded-lg">
+                {/* <Scale className="h-6 w-6 text-accent-foreground" /> */}
+                <img
+              src={logo}
+              alt="Owino Kojo Advocates Logo"
+              className="h-8 w-8 sm:h-8 sm:w-8"
+            />
               </div>
               <div>
-                <span className="text-xl font-display font-bold">Premier Law</span>
-                <span className="block text-xs opacity-80">Associates</span>
+                <span className="text-xl font-display font-bold">Owino Kojo</span>
+                <span className="block text-xs opacity-80">Advocates</span>
               </div>
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
-              Excellence in legal representation. Trusted advisors for individuals and businesses since 1985.
+              Excellence in legal representation. Trusted advisors for individuals and businesses since 2021.
             </p>
           </div>
 
@@ -57,17 +63,17 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 mt-0.5 opacity-80" />
                 <span className="text-sm opacity-80">
-                  123 Legal Plaza, Suite 500<br />
-                  New York, NY 10001
+                  West End Towers<br />
+                  2nd Floor, Waiyaki Way, Westlands
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 opacity-80" />
-                <span className="text-sm opacity-80">(212) 555-0123</span>
+                <span className="text-sm opacity-80">(254) 727 783 214</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 opacity-80" />
-                <span className="text-sm opacity-80">info@premierlaw.com</span>
+                <span className="text-sm opacity-80">info@owinokojoadvocates.com</span>
               </div>
             </div>
           </div>
@@ -76,7 +82,7 @@ const Footer = () => {
           <div>
             <h3 className="font-display font-semibold text-lg mb-4">Office Hours</h3>
             <div className="text-sm opacity-80 space-y-2">
-              <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+              <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
               <p>Saturday: 10:00 AM - 2:00 PM</p>
               <p>Sunday: Closed</p>
               <p className="mt-4 text-accent">24/7 Emergency Legal Services Available</p>
@@ -87,7 +93,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm opacity-80">
-            © {new Date().getFullYear()} Premier Law Associates. All rights reserved.
+            © {new Date().getFullYear()} Owino Kojo Advocates. All rights reserved.
           </p>
           <div className="flex gap-4">
             <a href="#" className="p-2 hover:bg-accent hover:text-accent-foreground rounded-full transition-all">
