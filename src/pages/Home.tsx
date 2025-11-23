@@ -191,8 +191,8 @@ const Home = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 bg-accent text-accent-foreground p-6 rounded-xl shadow-gold">
-                <div className="text-3xl font-display font-bold">98%</div>
+              <div className="absolute -bottom-6 -right-3 bg-accent text-accent-foreground p-6 rounded-xl shadow-gold">
+                <div className="text-3xl font-display font-bold">95%</div>
                 <div className="text-sm">Client Satisfaction</div>
               </div>
             </div>
