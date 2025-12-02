@@ -160,7 +160,7 @@ const CaseResults = () => {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 bg-background sticky top-20 z-40 border-b border-border">
+      <section className="py-8 bg-amber-100 sticky top-20 z-40 border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (
