@@ -5,7 +5,7 @@ import logo from '@/assets/logo2.png';
 const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
@@ -91,7 +91,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-primary-foreground/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-primary-foreground/20 pt-2 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm opacity-80">
             © {new Date().getFullYear()} Owino Kojo Advocates. All rights reserved.
           </p>

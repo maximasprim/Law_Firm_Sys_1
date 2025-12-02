@@ -32,9 +32,34 @@ const BookConsultation = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Create email body with form data
+    const emailBody = `
+New Consultation Request from ${formData.firstName} ${formData.lastName}
+
+Contact Information:
+- Email: ${formData.email}
+- Phone: ${formData.phone}
+
+Consultation Details:
+- Practice Area: ${formData.practiceArea}
+- Type: ${formData.consultationType}
+- Preferred Date: ${date ? format(date, "PPP") : "Not specified"}
+- Preferred Time: ${formData.timeSlot}
+
+Message:
+${formData.message}
+    `.trim();
+
+    // Create mailto link
+    const mailtoLink = `mailto:owinokojoadvocates@gmail.com?subject=Consultation Request - ${formData.firstName} ${formData.lastName}&body=${encodeURIComponent(emailBody)}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
     toast({
-      title: "Consultation Booked!",
-      description: "We've received your request. You'll receive a confirmation email shortly.",
+      title: "Opening Email Client",
+      description: "Please send the email to complete your consultation request.",
     });
   };
 
@@ -89,7 +114,7 @@ const BookConsultation = () => {
       {/* Booking Form */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <Card className="border-accent shadow-elegant">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -135,6 +160,7 @@ const BookConsultation = () => {
                         <Input
                           id="phone"
                           type="tel"
+                          placeholder="+254..."
                           value={formData.phone}
                           onChange={(e) => handleChange("phone", e.target.value)}
                           required
@@ -158,13 +184,19 @@ const BookConsultation = () => {
                             <SelectValue placeholder="Select practice area" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="corporate">Corporate Law</SelectItem>
+                            <SelectItem value="legal-risk-management">Legal Risk Audit & Management</SelectItem>
+                            <SelectItem value="corporate-governance">Corporate Governance</SelectItem>
+                            <SelectItem value="commercial-law">Commercial Law</SelectItem>
+                            <SelectItem value="banking-finance">Banking & Financing Law</SelectItem>
+                            <SelectItem value="insurance">Insurance Law</SelectItem>
+                            <SelectItem value="property-law">Property Law & Conveyancing</SelectItem>
+                            <SelectItem value="debt-recovery">Recoveries & Debt Management</SelectItem>
+                            <SelectItem value="it-law">Information Technology Law</SelectItem>
+                            <SelectItem value="intellectual-property">Intellectual Property Law</SelectItem>
+                            <SelectItem value="human-resource">Human Resource Law</SelectItem>
                             <SelectItem value="litigation">Litigation</SelectItem>
-                            <SelectItem value="family">Family Law</SelectItem>
-                            <SelectItem value="estate">Estate Planning</SelectItem>
-                            <SelectItem value="real-estate">Real Estate</SelectItem>
-                            <SelectItem value="personal-injury">Personal Injury</SelectItem>
-                            <SelectItem value="employment">Employment Law</SelectItem>
+                            <SelectItem value="ngo">Non-Governmental Organizations</SelectItem>
+                            <SelectItem value="enterprise-risk">Enterprise Risk Management</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
@@ -265,6 +297,25 @@ const BookConsultation = () => {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Alternative Contact Section */}
+            <div className="mt-8 text-center">
+              <p className="text-muted-foreground mb-4">Prefer to contact us directly?</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="tel:+254727783214">
+                  <Button variant="outline" size="lg" className="gap-2">
+                    <Phone className="h-4 w-4" />
+                    Call +254 727 783 214
+                  </Button>
+                </a>
+                <a href="mailto:owinokojoadvocates@gmail.com">
+                  <Button variant="outline" size="lg" className="gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Email Us
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
