@@ -2,12 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Clock, User, ArrowRight, Search, ExternalLink } from "lucide-react";
+import { Calendar, Clock, User, ExternalLink, Search } from "lucide-react";
 import { useState } from "react";
+
+// Import images from assets folder
+import dataProtectionImg from "@/assets/data protection.png";
+import cyberSecurityImg from "@/assets/computer Misuse.jpeg";
+import employmentLawImg from "@/assets/employment.png";
+import employmentLawImg2 from "@/assets/employment-law07.34.41.jpg";
+import corporateLawImg from "@/assets/business-laws.jpg";
+import dataPrivacyImg from "@/assets/data-protection-alert.jpg";
+import propertyLawImg from "@/assets/title-deeds.jpg";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
   const categories = ["All", "Data Protection", "Employment Law", "Corporate Law", "Property Law", "Cybersecurity"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -20,6 +28,7 @@ const Blog = () => {
       date: "November 4, 2024",
       readTime: "10 min read",
       url: "https://sentinelafricaconsulting.com/data-protection-act-kenya-compliance/",
+      image: dataProtectionImg
     },
     {
       title: "Kenya's Computer Misuse and Cybercrimes (Amendment) Act 2024",
@@ -29,6 +38,7 @@ const Blog = () => {
       date: "October 23, 2025",
       readTime: "12 min read",
       url: "https://manwaadvocates.com/latest-update-kenyas-computer-misuse-and-cybercrimes-amendment-act-2024/",
+      image: cyberSecurityImg
     },
     {
       title: "Recent Employment Law Reforms in Kenya: What Employers Need to Know",
@@ -37,7 +47,8 @@ const Blog = () => {
       source: "DLA Piper",
       date: "May 30, 2025",
       readTime: "15 min read",
-      url: "https://knowledge.dlapiper.com/dlapiperknowledge/globalemploymentlatestdevelopments/2025/recent-employment-law-reforms-in-kenya",
+      url: "https://knowledge.dlapiper.com/dlapikerknowledge/globalemploymentlatestdevelopments/2025/recent-employment-law-reforms-in-kenya",
+      image: employmentLawImg
     },
     {
       title: "Data Privacy Analysis of the Kenyan Finance Bill 2024",
@@ -47,6 +58,7 @@ const Blog = () => {
       date: "June 20, 2024",
       readTime: "8 min read",
       url: "https://cipit.org/a-data-privacy-analysis-of-the-kenyan-finance-bill-2024/",
+      image: dataPrivacyImg
     },
     {
       title: "Kenya Business Laws (Amendment) Bill 2024: Key Provisions Explained",
@@ -56,6 +68,7 @@ const Blog = () => {
       date: "September 26, 2025",
       readTime: "12 min read",
       url: "https://www.spencer-west.com/news/kenya-business-laws-amendment-bill-2024/",
+      image: corporateLawImg
     },
     {
       title: "Land Registration Act Kenya: A Complete Guide",
@@ -65,6 +78,7 @@ const Blog = () => {
       date: "March 25, 2025",
       readTime: "10 min read",
       url: "https://iconprime.co.ke/blog/land-registration-act-kenya-a-complete-guide/",
+      image: propertyLawImg
     },
     {
       title: "Employment Law Changes in Kenya: Right to Disconnect",
@@ -74,6 +88,7 @@ const Blog = () => {
       date: "September 11, 2025",
       readTime: "7 min read",
       url: "https://globalpeoplestrategist.com/employment-law-changes-in-kenya/",
+      image: employmentLawImg
     },
     {
       title: "Data Protection Laws in Kenya: Current Framework and Regulations",
@@ -83,6 +98,7 @@ const Blog = () => {
       date: "2024",
       readTime: "9 min read",
       url: "https://www.dlapiperdataprotection.com/index.html?t=law&c=KE",
+      image: dataProtectionImg
     },
     {
       title: "Kenya's Employment Act: Recent Amendments and Requirements",
@@ -92,6 +108,7 @@ const Blog = () => {
       date: "2024",
       readTime: "8 min read",
       url: "https://www.paulhastings.com/insights/practice-area-articles/kenya",
+      image: employmentLawImg2
     },
   ];
 
@@ -176,22 +193,23 @@ const Blog = () => {
                 className="group hover:shadow-elegant transition-all duration-300 border-border hover:border-accent animate-slide-up overflow-hidden flex flex-col"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* Image Placeholder */}
-                <div className="h-48 bg-gradient-to-br from-primary to-primary-light relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-display font-bold text-primary-foreground opacity-50">
-                      {post.category.substring(0, 2).toUpperCase()}
-                    </span>
+                {/* Actual Image */}
+                <div className="h-48 relative overflow-hidden">
+                  <img 
+                    src={post.image} 
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-accent text-accent-foreground shadow-lg">
+                      {post.category}
+                    </Badge>
                   </div>
                 </div>
 
                 <CardContent className="p-6 flex flex-col flex-1">
-                  <Badge variant="secondary" className="mb-3 w-fit">
-                    {post.category}
-                  </Badge>
-                  
-                  <h3 className="text-xl font-display font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-display font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   
@@ -203,7 +221,7 @@ const Blog = () => {
                     <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />
-                        {post.source}
+                        <span className="line-clamp-1">{post.source}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -221,7 +239,7 @@ const Blog = () => {
                       rel="noopener noreferrer"
                       className="inline-block w-full"
                     >
-                      <Button variant="ghost" className="group/btn p-0 h-auto font-semibold text-primary hover:text-accent w-full justify-start">
+                      <Button variant="ghost" className="font-semibold text-primary  w-full justify-start">
                         Read Article
                         <ExternalLink className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
