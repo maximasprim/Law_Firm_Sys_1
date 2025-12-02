@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Award, Users, Target, Heart, TrendingUp, Globe } from "lucide-react";
+import { Award, Users, Target, Heart, TrendingUp, Globe, Shield, CheckCircle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import aboutImage from "@/assets/about-justice.jpg";
 
@@ -8,32 +8,38 @@ const About = () => {
   const values = [
     {
       icon: Award,
-      title: "Excellence",
-      description: "We maintain the highest standards of legal practice and consistently deliver exceptional results.",
+      title: "Professionalism",
+      description: "We maintain the highest standards of legal practice with qualified and experienced advocates.",
+    },
+    {
+      icon: CheckCircle,
+      title: "Responsiveness",
+      description: "Quick and effective response to client needs, ensuring timely legal solutions.",
     },
     {
       icon: Heart,
-      title: "Integrity",
-      description: "Our commitment to ethical practice and transparency guides every decision we make.",
+      title: "Accountability",
+      description: "Taking full responsibility for our work and maintaining transparency with our clients.",
     },
     {
       icon: Users,
-      title: "Client-Focused",
-      description: "Your success is our priority. We provide personalized attention and tailored strategies.",
+      title: "Accessibility",
+      description: "Making quality legal services available and approachable for all our clients.",
     },
     {
       icon: Target,
-      title: "Results-Driven",
-      description: "We combine legal expertise with strategic thinking to achieve your desired outcomes.",
+      title: "Versatility",
+      description: "Comprehensive legal expertise across multiple practice areas to serve diverse client needs.",
     },
   ];
 
   const milestones = [
-    { year: "2021", event: "Owino Kojo Advocates founded in Nairobi, Kenya" },
-    { year: "2022", event: "Expanded practice areas to include corporate and commercial law" },
-    { year: "2023", event: "Achieved significant wins in family law and property disputes" },
-    { year: "2024", event: "Recognized as a leading emerging law firm in Kenya" },
-    { year: "2025", event: "Continuing to serve clients across Kenya with excellence" },
+    { year: "2014", event: "Owino Kojo & Co. Advocates registered on 24th July 2014" },
+    { year: "2014", event: "Offices established in Nairobi and Kisumu with KSh 1 Billion indemnity cover" },
+    { year: "2015-2017", event: "Built reputation in commercial law, corporate governance, and risk management" },
+    { year: "2018", event: "Kisumu office closed as partner pursued ventures abroad" },
+    { year: "2014-Present", event: "Handled high-profile cases including KSh 18 Billion waste management dispute" },
+    { year: "Present", event: "Aspiring to be leading law firm in East and Central Africa" },
   ];
 
   return (
@@ -43,10 +49,10 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
-              About Owino Kojo Advocates
+              About Owino Kojo & Co. Advocates
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Four years of legal excellence, trusted relationships, and unwavering commitment to justice in Kenya.
+              A decade of legal excellence, trusted relationships, and unwavering commitment to justice in Kenya and beyond.
             </p>
           </div>
         </div>
@@ -62,13 +68,16 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Founded in 2021, Owino Kojo Advocates began with a simple mission: to provide exceptional legal representation with integrity and dedication. What started as a commitment to serve the Kenyan community has grown into a trusted law firm serving clients across the nation.
+                  Founded on 24th July 2014, Owino Kojo & Co. Advocates was established with a clear mission: to provide strategic and satisfactory cost-effective legal services to clients. What began with offices in both Nairobi and Kisumu has evolved into a top-tier law firm with a strong presence in Kenya's capital.
                 </p>
                 <p>
-                  Since our establishment, we've built our reputation on a foundation of legal excellence, ethical practice, and unwavering commitment to our clients. Our team of experienced advocates brings together diverse expertise across multiple practice areas, allowing us to serve individuals, businesses, and organizations with comprehensive legal solutions tailored to the Kenyan legal landscape.
+                  Our firm specializes in Commercial Law, Corporate Governance, Conveyancing, Intellectual Property, Legal Audit, Human Resource Law, Non-Governmental Organizations, Litigation, and Enterprise Risk Management. With an indemnity cover of One Billion Kenya Shillings, we demonstrate our commitment to protecting our clients' interests.
                 </p>
                 <p>
-                  Today, with a dedicated team of advocates and support staff committed to excellence, we continue to set the standard for legal representation in Kenya. Our success is measured not just in cases won, but in the lasting relationships we build and the positive impact we make in our clients' lives.
+                  Led by Dr. Owino Kojo, a Certified Corporate Secretary with advanced degrees including a PhD, our team of astute, able, qualified and experienced partners and associates has handled some of Kenya's most significant legal matters, including an 18 billion shilling waste management dispute. We work closely with our clients to assess legal risks and find appropriate legal solutions that promote their business objectives.
+                </p>
+                <p>
+                  Today, operating from Lower Hill Duplex in Upper Hill, Nairobi, we continue to aspire towards becoming the leading law firm in East and Central Africa, setting the standard for legal excellence in the region.
                 </p>
               </div>
             </div>
@@ -80,13 +89,52 @@ const About = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
+              <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground p-6 rounded-xl shadow-gold">
+                <div className="text-3xl font-display font-bold">KSh 1B</div>
+                <div className="text-sm">Indemnity Cover</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Vision & Mission Section */}
       <section className="py-20 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <Card className="hover:shadow-elegant transition-all duration-300 border-2 border-accent/20">
+              <CardContent className="p-8">
+                <div className="mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <Target className="h-10 w-10 text-primary" />
+                </div>
+                <h3 className="text-2xl font-display font-bold text-primary mb-4">
+                  Our Vision
+                </h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  To be a leading law firm in East and Central Africa and beyond.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-elegant transition-all duration-300 border-2 border-accent/20">
+              <CardContent className="p-8">
+                <div className="mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <Shield className="h-10 w-10 text-primary" />
+                </div>
+                <h3 className="text-2xl font-display font-bold text-primary mb-4">
+                  Our Mission
+                </h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  To provide strategic and satisfactory cost effective legal services to clients.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Section */}
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-4">
@@ -97,7 +145,7 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {values.map((value, index) => (
               <Card 
                 key={index} 
@@ -122,14 +170,14 @@ const About = () => {
       </section>
 
       {/* Milestones Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-4">
               Our Journey
             </h2>
             <p className="text-xl text-muted-foreground">
-              Key milestones in our journey since 2021
+              Key milestones since our establishment in 2014
             </p>
           </div>
 
@@ -141,7 +189,7 @@ const About = () => {
                   className="flex gap-6 items-start animate-slide-up group"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex-shrink-0 w-24 text-right">
+                  <div className="flex-shrink-0 w-32 text-right">
                     <span className="text-2xl font-display font-bold text-accent group-hover:text-primary transition-colors">
                       {milestone.year}
                     </span>
@@ -166,10 +214,10 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             {[
-              { icon: TrendingUp, value: "98%", label: "Success Rate" },
-              { icon: Users, value: "10+", label: "Advocates" },
-              { icon: Award, value: "5+", label: "Awards" },
-              { icon: Globe, value: "47", label: "Counties Served" },
+              { icon: TrendingUp, value: "10+", label: "Years Experience" },
+              { icon: Users, value: "2", label: "Partners" },
+              { icon: Award, value: "50+", label: "High-Profile Cases" },
+              { icon: Globe, value: "East Africa", label: "Regional Reach" },
             ].map((stat, index) => (
               <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
                 <stat.icon className="h-12 w-12 mx-auto mb-4 opacity-80" />
@@ -191,7 +239,7 @@ const About = () => {
               Ready to Work With Us?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Experience the Owino Kojo Advocates difference. Schedule your free consultation today.
+              Experience the Owino Kojo & Co. Advocates difference. Schedule your free consultation today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <NavLink to="/contact">
@@ -199,8 +247,8 @@ const About = () => {
                   Get Started
                 </Button>
               </NavLink>
-              <NavLink to="/attorneys">
-                <Button size="lg" variant="outline">
+              <NavLink to="/advocates">
+                <Button size="lg" variant="outline" className="hover:bg-primary/90">
                   Meet Our Team
                 </Button>
               </NavLink>

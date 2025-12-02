@@ -9,99 +9,109 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 221 39% 11%;
+    --foreground: 25 42% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 221 39% 11%;
+    --card-foreground: 25 42% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 221 39% 11%;
+    --popover-foreground: 25 42% 17%;
 
-    --primary: 221 83% 20%;
+    /* Primary: Exact Dark Brown from logo (#3D2817) */
+    --primary: 25 42% 17%;               
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 17% 95%;
-    --secondary-foreground: 221 39% 11%;
+    --secondary: 25 20% 92%;
+    --secondary-foreground: 25 42% 17%;
 
-    --muted: 210 17% 95%;
-    --muted-foreground: 221 16% 46%;
+    --muted: 25 20% 92%;
+    --muted-foreground: 25 25% 45%;
 
-    --accent: 43 74% 60%;
-    --accent-foreground: 221 39% 11%;
+    /* Accent: Exact Rust Red from logo (#7D3028) */
+    --accent: 4 45% 33%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 20%;
+    --border: 25 20% 88%;
+    --input: 25 20% 88%;
+    --ring: 25 42% 17%;
 
     --radius: 0.5rem;
 
-    /* Law firm specific colors */
-    --navy: 221 83% 20%;
-    --navy-light: 221 70% 30%;
-    --navy-dark: 221 90% 12%;
-    --gold: 43 74% 60%;
-    --gold-light: 43 90% 70%;
-    --gold-dark: 43 60% 45%;
+    /* Exact logo colors */
+    --brown-dark: 25 42% 17%;      /* #3D2817 - Main dark brown from K */
+    --brown: 25 42% 27%;           /* Lighter variation */
+    --brown-light: 25 35% 40%;     /* Even lighter */
+    --rust: 4 45% 33%;             /* #7D3028 - Rust red from C */
+    --rust-light: 4 45% 48%;       /* Lighter rust */
+    --rust-dark: 4 50% 25%;        /* Darker rust */
+    
+    /* Complementary warm neutrals */
+    --cream: 30 35% 90%;
+    --tan: 25 25% 75%;
+    --sand: 25 20% 85%;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(221 83% 20%) 0%, hsl(221 70% 30%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(43 74% 60%) 0%, hsl(43 90% 70%) 100%);
+    /* Gradients using exact logo colors */
+    --gradient-hero: linear-gradient(135deg, hsl(25 42% 17%) 0%, hsl(4 45% 33%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(4 45% 33%) 0%, hsl(4 45% 48%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(25 42% 27%) 0%, hsl(25 25% 75%) 100%);
     
     /* Shadows */
-    --shadow-elegant: 0 10px 40px -10px hsl(221 83% 20% / 0.2);
-    --shadow-gold: 0 5px 20px -5px hsl(43 74% 60% / 0.3);
+    --shadow-elegant: 0 10px 40px -10px hsl(25 42% 17% / 0.2);
+    --shadow-warm: 0 5px 20px -5px hsl(4 45% 33% / 0.3);
 
     /* Sidebar */
-    --sidebar-background: 221 83% 20%;
+    --sidebar-background: 25 42% 17%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 43 74% 60%;
-    --sidebar-primary-foreground: 221 39% 11%;
-    --sidebar-accent: 221 70% 25%;
+    --sidebar-primary: 4 45% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 42% 27%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 221 70% 25%;
-    --sidebar-ring: 43 74% 60%;
+    --sidebar-border: 25 42% 27%;
+    --sidebar-ring: 4 45% 33%;
   }
 
   .dark {
-    --background: 221 39% 11%;
+    --background: 25 42% 12%;
     --foreground: 0 0% 100%;
 
-    --card: 221 50% 15%;
+    --card: 25 35% 15%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 221 50% 15%;
+    --popover: 25 35% 15%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 43 74% 60%;
-    --primary-foreground: 221 39% 11%;
+    /* Primary: Dark Brown (slightly lighter for dark mode) */
+    --primary: 25 42% 27%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 221 50% 18%;
+    --secondary: 25 30% 20%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 221 50% 18%;
-    --muted-foreground: 221 16% 65%;
+    --muted: 25 30% 20%;
+    --muted-foreground: 25 15% 65%;
 
-    --accent: 43 74% 60%;
-    --accent-foreground: 221 39% 11%;
+    /* Accent: Rust Red (brighter for dark mode) */
+    --accent: 4 50% 48%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 221 50% 18%;
-    --input: 221 50% 18%;
-    --ring: 43 74% 60%;
+    --border: 25 30% 20%;
+    --input: 25 30% 20%;
+    --ring: 4 50% 48%;
 
-    --sidebar-background: 221 50% 15%;
+    --sidebar-background: 25 35% 15%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 43 74% 60%;
-    --sidebar-primary-foreground: 221 39% 11%;
-    --sidebar-accent: 221 50% 20%;
+    --sidebar-primary: 4 50% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 35% 22%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 221 50% 20%;
-    --sidebar-ring: 43 74% 60%;
+    --sidebar-border: 25 35% 22%;
+    --sidebar-ring: 4 50% 48%;
   }
 }
 
@@ -127,12 +137,37 @@ All colors MUST be HSL.
   .gradient-accent {
     background: var(--gradient-accent);
   }
+  
+  .gradient-warm {
+    background: var(--gradient-warm);
+  }
 
   .shadow-elegant {
     box-shadow: var(--shadow-elegant);
   }
 
-  .shadow-gold {
-    box-shadow: var(--shadow-gold);
+  .shadow-warm {
+    box-shadow: var(--shadow-warm);
+  }
+  
+  /* Utility classes for exact logo colors */
+  .bg-brown-dark {
+    background-color: hsl(var(--brown-dark));
+  }
+  
+  .bg-rust {
+    background-color: hsl(var(--rust));
+  }
+  
+  .text-brown-dark {
+    color: hsl(var(--brown-dark));
+  }
+  
+  .text-rust {
+    color: hsl(var(--rust));
+  }
+  
+  .border-rust {
+    border-color: hsl(var(--rust));
   }
 }

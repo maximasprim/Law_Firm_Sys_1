@@ -3,163 +3,163 @@ import { Button } from "@/components/ui/button";
 import { 
   Scale, 
   Shield, 
-  Users, 
-  Award, 
   Building2, 
   FileText, 
   Home,
   Briefcase,
-  HeartHandshake,
   Gavel,
   TrendingUp,
-  Car
+  Users,
+  CreditCard,
+  ShieldCheck,
+  Laptop
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 
 const PracticeAreas = () => {
   const practiceAreas = [
   {
-    icon: Building2,
-    title: "Corporate & Commercial Law",
-    description:
-      "Legal advisory for companies, startups, and SMEs in Kenya, including compliance with the Companies Act, commercial contracts, and business transactions.",
-    features: [
-      "Company Registration & Compliance",
-      "Commercial Contracts",
-      "Mergers & Acquisitions",
-      "Corporate Governance",
-    ],
-  },
-  {
     icon: Shield,
-    title: "Litigation & Dispute Resolution",
+    title: "Legal Risk Audit & Management",
     description:
-      "Representation before Kenyan courts, tribunals, and arbitration panels in civil, commercial, and constitutional matters.",
+      "Comprehensive identification, analysis, and monitoring of legal risks within your organization's internal and external environment.",
     features: [
-      "Civil Litigation",
-      "Commercial Disputes",
-      "Arbitration & Mediation",
-      "Constitutional Petitions",
+      "Compliance Default Risk Assessment",
+      "Employment Liability Risk Management",
+      "Tax Compliance Risk Analysis",
+      "Operational & Strategic Risk Management",
     ],
   },
   {
-    icon: Users,
-    title: "Family & Child Law",
+    icon: Building2,
+    title: "Corporate Governance",
     description:
-      "Legal support for family-related matters under the Marriage Act, Children Act, and Matrimonial Property Act.",
+      "Expert consultancy on commerce, corporate governance, business development, and ensuring compliance with relevant laws and regulations.",
     features: [
-      "Divorce & Separation",
-      "Child Custody & Maintenance",
-      "Adoption Services",
-      "Matrimonial Property",
+      "Company & Partnership Registration",
+      "Corporate Governance Consultancy",
+      "Filing Returns & Compliance",
+      "Board & Management Advisory",
     ],
   },
   {
-    icon: Award,
-    title: "Estate Planning & Succession",
+    icon: CreditCard,
+    title: "Banking & Financing Law",
     description:
-      "Guidance on wills, succession matters, and estate administration under Kenyan succession laws.",
+      "Comprehensive legal services for banking transactions, loan agreements, and financial documentation.",
     features: [
-      "Wills & Trusts",
-      "Probate & Letters of Administration",
-      "Estate Distribution",
-      "Asset Protection",
+      "Preparation & Registration of Charges",
+      "Chattel Mortgages & Transfers",
+      "Loan Syndication Agreements",
+      "Debentures Registration",
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: "Insurance Law",
+    description:
+      "Legal advisory and representation for insurance companies, policy holders, and re-insurance matters.",
+    features: [
+      "Policy Document Drafting",
+      "Insurance Product Evaluation",
+      "Declaratory Suits & Indemnity",
+      "Re-insurance Legal Advisory",
     ],
   },
   {
     icon: Home,
-    title: "Real Estate & Property Law",
+    title: "Property Law",
     description:
-      "Legal assistance for land transactions, property disputes, and conveyancing in line with the Land Act and Land Registration Act.",
+      "Complete conveyancing services, property transactions, and estate management solutions.",
     features: [
-      "Conveyancing",
-      "Lease Agreements",
-      "Land Disputes",
-      "Title Search & Verification",
+      "Sale & Lease Agreement Preparation",
+      "Transfer & Lease Registration",
+      "Powers of Attorney & Caveats",
+      "Estate Management Services",
+    ],
+  },
+  {
+    icon: TrendingUp,
+    title: "Recoveries & Debt Management",
+    description:
+      "Effective debt recovery strategies, bankruptcy proceedings, and creditor representation.",
+    features: [
+      "Debt Recovery & Execution",
+      "Bankruptcy & Liquidation",
+      "Garnishee Proceedings",
+      "Receivership & Management",
+    ],
+  },
+  {
+    icon: Laptop,
+    title: "Information Technology Law",
+    description:
+      "Legal support for technology companies, software agreements, and digital commerce.",
+    features: [
+      "Software & Support Agreements",
+      "Web Hosting Agreements",
+      "E-Commerce & M-Commerce Law",
+      "Escrow & Distribution Agreements",
     ],
   },
   {
     icon: FileText,
     title: "Intellectual Property Law",
     description:
-      "Protection of creative works, brands, and innovations under KIPI (Kenya Industrial Property Institute) regulations.",
+      "Protection and registration of trademarks, copyrights, patents, and IP litigation services.",
     features: [
       "Trademark Registration",
-      "Copyright Protection",
-      "Patent Applications",
-      "IP Enforcement",
+      "Copyright Registration",
+      "Patent Registration",
+      "IP Litigation & Legal Opinions",
     ],
   },
   {
-    icon: Briefcase,
-    title: "Employment & Labour Law",
+    icon: Users,
+    title: "Human Resource Law",
     description:
-      "Representation and advisory under the Employment Act, Labour Relations Act, and workplace regulations.",
+      "Comprehensive employment law services, from policy development to dispute resolution.",
     features: [
-      "Employment Contracts",
-      "Unfair Termination Claims",
-      "Workplace Disputes",
-      "Health & Safety Compliance",
-    ],
-  },
-  {
-    icon: HeartHandshake,
-    title: "Personal Injury & Compensation",
-    description:
-      "Claims for accidents, medical negligence, workplace injuries, and insurance disputes.",
-    features: [
-      "Road Accident Claims",
-      "Medical Negligence",
-      "Workplace Injury Claims",
-      "Insurance Disputes",
+      "Employment & HR Manuals",
+      "Employment & Consultancy Agreements",
+      "Collective Bargaining Agreements (CBAs)",
+      "Employment Dispute Resolution",
     ],
   },
   {
     icon: Gavel,
-    title: "Criminal Defense",
+    title: "Litigation",
     description:
-      "Defense representation in criminal matters before Kenyan courts, including bail applications and trial defense.",
+      "Expert representation in civil, commercial, employment, and tax matters across all courts and tribunals.",
     features: [
-      "Bail & Bond Applications",
-      "White Collar Crime",
-      "Sexual & Gender-Based Offenses",
-      "Drug-Related Offenses",
-    ],
-  },
-  {
-    icon: TrendingUp,
-    title: "Tax Advisory & Compliance",
-    description:
-      "Support with KRA compliance, tax planning, and disputes before the Tax Appeals Tribunal.",
-    features: [
-      "Tax Planning",
-      "KRA Audits & Objections",
-      "Tax Appeals Tribunal Representation",
-      "Corporate Tax Advisory",
-    ],
-  },
-  {
-    icon: Car,
-    title: "Immigration & Citizenship",
-    description:
-      "Services for permits, visas, citizenship, and immigration appeals under Kenyan immigration laws.",
-    features: [
-      "Work Permits & Passes",
-      "Visa Applications",
-      "Citizenship Applications",
-      "Immigration Appeals",
+      "Civil & Commercial Litigation",
+      "Insurance Claims Defense",
+      "Judicial Review Proceedings",
+      "Arbitration & Tax Litigation",
     ],
   },
   {
     icon: Scale,
-    title: "Insolvency & Debt Recovery",
+    title: "Non-Governmental Organizations",
     description:
-      "Debt collection, corporate restructuring, and insolvency services for individuals and companies.",
+      "Registration, compliance, and governance advisory for NGOs, societies, and trusts.",
     features: [
-      "Debt Recovery",
-      "Corporate Insolvency",
-      "Bankruptcy Applications",
-      "Creditors’ Rights",
+      "NGO & Society Registration",
+      "Trust Formation & Management",
+      "Compliance & Reporting",
+      "Governance Consulting",
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: "Enterprise Risk Management",
+    description:
+      "Strategic risk management frameworks and continuous compliance monitoring for organizations.",
+    features: [
+      "Risk Management Framework Development",
+      "Compliance Monitoring",
+      "Risk Response Strategy",
+      "Best Practice Implementation",
     ],
   },
 ];
@@ -195,7 +195,7 @@ const PracticeAreas = () => {
                   <div className="mb-4 p-3 bg-primary/10 rounded-lg w-fit group-hover:bg-accent group-hover:shadow-gold transition-all duration-300">
                     <area.icon className="h-8 w-8 text-primary group-hover:text-accent-foreground" />
                   </div>
-                  <h3 className="text-2xl font-display font-semibold mb-3 text-foreground">
+                  <h3 className="text-2xl font-display font-semibold mb-3 text-black">
                     {area.title}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed mb-4">
@@ -236,7 +236,7 @@ const PracticeAreas = () => {
                 </Button>
               </NavLink>
               <NavLink to="/advocates">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="hover:bg-primary/90">
                   Meet Our Advocates
                 </Button>
               </NavLink>

@@ -19,12 +19,12 @@ const Footer = () => {
             />
               </div>
               <div>
-                <span className="text-xl font-display font-bold">Owino Kojo</span>
-                <span className="block text-xs opacity-80">Advocates</span>
+                <span className="text-xl font-display font-bold">Owino Kojo &</span>
+                <span className="block text-sm opacity-80 flex items-center justify-center">Co. Advocates</span>
               </div>
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
-              Excellence in legal representation. Trusted advisors for individuals and businesses since 2021.
+              Excellence in legal representation. Trusted advisors for individuals and businesses since 2014.
             </p>
           </div>
 
@@ -38,8 +38,8 @@ const Footer = () => {
               <NavLink to="/practice-areas" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Practice Areas
               </NavLink>
-              <NavLink to="/attorneys" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
-                Our Attorneys
+              <NavLink to="/advocates" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
+                Our Advocates
               </NavLink>
               <NavLink to="/case-results" className="text-sm opacity-80 hover:opacity-100 hover:text-accent transition-all">
                 Case Results
@@ -85,7 +85,7 @@ const Footer = () => {
               <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
               <p>Saturday: 10:00 AM - 2:00 PM</p>
               <p>Sunday: Closed</p>
-              <p className="mt-4 text-accent">24/7 Emergency Legal Services Available</p>
+              <p className="mt-4 text-gray-400">24/7 Emergency Legal Services Available</p>
             </div>
           </div>
         </div>

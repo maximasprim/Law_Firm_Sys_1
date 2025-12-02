@@ -2,7 +2,7 @@ import { Scale, Menu, X } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-[60px] items-center justify-between">
           <NavLink to="/" className="flex items-center gap-3 group">
             <div className="p-1 rounded-lg group-hover:shadow-gold transition-all duration-300">
               {/* <Scale className="h-6 w-6 text-primary-foreground" /> */}
@@ -31,8 +31,9 @@ const Header = () => {
             />
             </div>
             <div>
-              <span className="text-xl font-display font-bold text-primary">Owino Kojo</span>
-              <span className="block text-xs text-muted-foreground font-body">Advocates</span>
+              <span className="text-xl font-display font-bold text-primary">Owino Kojo &</span>
+              <span className="block text-sm text-muted-foreground font-body flex items-center justify-center">Co. Advocates</span>
+              {/* <span className="block text-xs text-muted-foreground font-body">Advocates</span> */}
             </div>
           </NavLink>
 

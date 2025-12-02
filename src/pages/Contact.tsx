@@ -260,7 +260,7 @@ const Contact = () => {
               <div className="text-center">
                 <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
                 <p className="text-muted-foreground mb-2 font-semibold">
-                  Owino Kojo Advocates
+                  Owino Kojo & Co. Advocates
                 </p>
                 <p className="text-muted-foreground text-sm">
                   West End Towers<br />
