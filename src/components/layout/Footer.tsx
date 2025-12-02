@@ -1,6 +1,6 @@
 import { Scale, Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 
 const Footer = () => {
   return (
