@@ -18,6 +18,7 @@ import BookConsultation from "./pages/BookConsultation";
 import NotFound from "./pages/NotFound";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import LawFirmDashboard from "./pages/Admin/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/book-consultation" element={<BookConsultation />} />
+              <Route path="/admin/dashboard" element={<LawFirmDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
