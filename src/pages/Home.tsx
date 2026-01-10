@@ -78,13 +78,13 @@ const Home = () => {
                   Free Consultation
                 </Button>
               </NavLink>
-              <NavLink to="/practice-areas">
+              <NavLink to="/client-registration">
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-primary text-gray-300 bg-transparent hover:bg-primary/10 text-lg px-8"
                 >
-                  Our Services
+                  Become a Client
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </NavLink>

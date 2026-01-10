@@ -19,6 +19,11 @@ import NotFound from "./pages/NotFound";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import LawFirmDashboard from "./pages/Admin/Dashboard";
+import ClientRegistration from "./features/Registration/ClientRegistration";
+import LegalLogin from "./features/Registration/login";
+import AdvocateRegistration from "./features/Registration/AdvocateRegistration";
+import ForgotPassword from "./features/PasswordReset/ForgotPassword";
+import ResetPassword from "./features/PasswordReset/Reset";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +50,12 @@ const App = () => (
               <Route path="/careers" element={<Careers />} />
               <Route path="/book-consultation" element={<BookConsultation />} />
               <Route path="/admin/dashboard" element={<LawFirmDashboard />} />
+              <Route path="/client-registration" element={<ClientRegistration />} />
+              <Route path="/legal-login" element={<LegalLogin />} />
+              <Route path="/advocate-registration" element={<AdvocateRegistration />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
