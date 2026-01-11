@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -22,6 +22,10 @@ import {
   Building2,
   Gavel,
   Loader2,
+  FilePlusIcon,
+  UserPlus,
+  Upload,
+  Folder,
 } from "lucide-react";
 import {
   useGetCasesQuery,
@@ -32,7 +36,13 @@ import {
   useLazySearchCasesQuery,
   useGetCaseWithDetailsQuery,
 } from "../../features/Cases/casesApi";
-import {toast, Toaster} from "react-hot-toast";
+import {
+  useCreateDocumentMutation,
+  useUpdateDocumentMutation,
+} from "../../features/Documents/documentsApi";
+import { useCreateCaseTeamMemberMutation } from "../../features/Team/teamApi";
+import { useGetDocumentsQuery } from "../../features/Documents/documentsApi";
+import { toast, Toaster } from "react-hot-toast";
 
 const CasesManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,6 +51,12 @@ const CasesManagement = () => {
   const [editingCase, setEditingCase] = useState(null);
   const [viewingCaseId, setViewingCaseId] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // New states for team and document modals
+  const [showAddTeamModal, setShowAddTeamModal] = useState(false);
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
+  const [selectedCaseForTeam, setSelectedCaseForTeam] = useState(null);
+  const [selectedCaseForDocument, setSelectedCaseForDocument] = useState(null);
 
   // RTK Query hooks
   const {
@@ -57,36 +73,23 @@ const CasesManagement = () => {
   const [updateCase, { isLoading: isUpdating }] = useUpdateCaseMutation();
   const [searchCases, { data: searchResults }] = useLazySearchCasesQuery();
 
-  // console.log("Cases:", cases);
-  // Handle search with debounce effect
-  // React.useEffect(() => {
-  //   if (searchTerm.length > 2) {
-  //     const timer = setTimeout(() => {
-  //       searchCases(searchTerm);
-  //     }, 300);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [searchTerm, searchCases]);
+  // New mutations
+  const [createDocument, { isLoading: isCreatingDocument }] =
+    useCreateDocumentMutation();
+  const [createCaseTeamMember, { isLoading: isCreatingTeamMember }] =
+    useCreateCaseTeamMemberMutation();
 
-  // // Use search results if searching, otherwise use all cases
-  // const casesToDisplay =
-  //   searchTerm.length > 2 && searchResults ? searchResults : cases;
-
-  // // Filter cases based on status
-  // const filteredCases = casesToDisplay.filter((case_) => {
-  //   if (filterStatus === "all") return true;
-  //   return case_.status === filterStatus;
-  // });
   const filterCasesBySearch = (casesArray, search) => {
     if (!search || search.trim() === "") return casesArray;
-    
+
     const searchLower = search.toLowerCase().trim();
-    return casesArray.filter(case_ => 
-      case_.case_number?.toLowerCase().includes(searchLower) ||
-      case_.title?.toLowerCase().includes(searchLower) ||
-      case_.description?.toLowerCase().includes(searchLower) ||
-      case_.opposing_party?.toLowerCase().includes(searchLower) ||
-      case_.court_name?.toLowerCase().includes(searchLower)
+    return casesArray.filter(
+      (case_) =>
+        case_.case_number?.toLowerCase().includes(searchLower) ||
+        case_.title?.toLowerCase().includes(searchLower) ||
+        case_.description?.toLowerCase().includes(searchLower) ||
+        case_.opposing_party?.toLowerCase().includes(searchLower) ||
+        case_.court_name?.toLowerCase().includes(searchLower)
     );
   };
 
@@ -108,7 +111,7 @@ const CasesManagement = () => {
         toast.success("Case deleted successfully");
       } catch (error) {
         toast.error("Failed to delete case");
-      }finally {
+      } finally {
         setIsProcessing(false);
       }
     }
@@ -209,7 +212,6 @@ const CasesManagement = () => {
       <div className="p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           Error loading cases. Please check your API connection.
-          {/* <div className="mt-2 text-sm">{casesError?.message || 'Unknown error'}</div> */}
         </div>
       </div>
     );
@@ -218,7 +220,11 @@ const CasesManagement = () => {
   return (
     <div className="p-6">
       <Toaster position="top-right" />
-      {(isDeleting || isCreating || isUpdating) && (
+      {(isDeleting ||
+        isCreating ||
+        isUpdating ||
+        isCreatingDocument ||
+        isCreatingTeamMember) && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-[60]">
           <div className="bg-white rounded-lg p-6 flex items-center gap-3 shadow-xl">
             <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
@@ -226,6 +232,8 @@ const CasesManagement = () => {
               {isDeleting && "Deleting case..."}
               {isCreating && "Creating case..."}
               {isUpdating && "Updating case..."}
+              {isCreatingDocument && "Adding document..."}
+              {isCreatingTeamMember && "Adding team member..."}
             </span>
           </div>
         </div>
@@ -316,11 +324,6 @@ const CasesManagement = () => {
                 </button>
               )}
             </div>
-            {/* {searchTerm && (
-              <p className="text-xs text-gray-500 mt-1">
-                Found {searchFilteredCases.length} case(s)
-              </p>
-            )} */}
           </div>
           <div className="flex gap-2 w-full md:w-auto">
             <select
@@ -472,6 +475,26 @@ const CasesManagement = () => {
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
+                        <button
+                          onClick={() => {
+                            setSelectedCaseForTeam(case_);
+                            setShowAddTeamModal(true);
+                          }}
+                          className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                          title="Add Case Team"
+                        >
+                          <UserPlus className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedCaseForDocument(case_);
+                            setShowAddDocumentModal(true);
+                          }}
+                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Add Case Documents"
+                        >
+                          <FilePlusIcon className="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -502,7 +525,6 @@ const CasesManagement = () => {
             setIsProcessing(true);
             try {
               if (editingCase) {
-                // Clean the data: remove empty strings
                 const cleanedData = Object.entries(caseData).reduce(
                   (acc, [key, value]) => {
                     if (value !== "") {
@@ -510,10 +532,8 @@ const CasesManagement = () => {
                     }
                     return acc;
                   },
-                  {} as any
+                  {}
                 );
-
-                // console.log("Cleaned data being sent:", cleanedData);
 
                 await updateCase({
                   ...cleanedData,
@@ -527,11 +547,53 @@ const CasesManagement = () => {
               setShowNewCaseModal(false);
               setEditingCase(null);
             } catch (error) {
-              // console.error("Update error:", error);
               toast.error("Failed to save case");
-            }
-            finally {
+            } finally {
               setIsProcessing(false);
+            }
+          }}
+        />
+      )}
+
+      {/* Add Team Member Modal */}
+      {showAddTeamModal && selectedCaseForTeam && (
+        <AddTeamMemberModal
+          case_={selectedCaseForTeam}
+          onClose={() => {
+            setShowAddTeamModal(false);
+            setSelectedCaseForTeam(null);
+          }}
+          onSave={async (teamData) => {
+            try {
+              await createCaseTeamMember(teamData).unwrap();
+              toast.success("Team member added successfully");
+              setShowAddTeamModal(false);
+              setSelectedCaseForTeam(null);
+              refetchCases();
+            } catch (error) {
+              toast.error("Failed to add team member");
+            }
+          }}
+        />
+      )}
+
+      {/* Add Document Modal */}
+      {showAddDocumentModal && selectedCaseForDocument && (
+        <AddDocumentModal
+          case_={selectedCaseForDocument}
+          onClose={() => {
+            setShowAddDocumentModal(false);
+            setSelectedCaseForDocument(null);
+          }}
+          onSave={async (documentData) => {
+            try {
+              await createDocument(documentData).unwrap();
+              toast.success("Document added successfully");
+              setShowAddDocumentModal(false);
+              setSelectedCaseForDocument(null);
+              refetchCases();
+            } catch (error) {
+              toast.error("Failed to add document");
             }
           }}
         />
@@ -566,9 +628,14 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
   if (!caseDetails) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"onClick={onClose}>
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">
@@ -584,10 +651,8 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
-            {/* Status and Priority */}
             <div className="flex items-center gap-4">
               <span
                 className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${
@@ -626,7 +691,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </span>
             </div>
 
-            {/* Client Information */}
             {caseDetails.client && (
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -634,61 +698,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
                   Client Information
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Client Name</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.client.company_name ||
-                        `${caseDetails.client.first_name} ${caseDetails.client.last_name}`}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Client Number</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.client.client_number}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Email</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.client.email}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Phone</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.client.phone_number}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Primary Attorney */}
-            {caseDetails.primaryAdvocate && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Scale className="h-5 w-5 text-amber-600" />
-                  Primary Attorney
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Name</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.primaryAdvocate.full_name}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Role</p>
-                    <p className="text-sm font-medium text-gray-900 capitalize">
-                      {caseDetails.primaryAdvocate.role.replace("_", " ")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Email</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {caseDetails.primaryAdvocate.email}
-                    </p>
-                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Phone</p>
                     <p className="text-sm font-medium text-gray-900">
@@ -699,7 +708,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </div>
             )}
 
-            {/* Case Details */}
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Briefcase className="h-5 w-5 text-amber-600" />
@@ -761,7 +769,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </div>
             </div>
 
-            {/* Team Members */}
             {caseDetails.team && caseDetails.team.length > 0 && (
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -788,7 +795,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </div>
             )}
 
-            {/* Documents */}
             {caseDetails.documents && caseDetails.documents.length > 0 && (
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -816,7 +822,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </div>
             )}
 
-            {/* Court Hearings */}
             {caseDetails.hearings && caseDetails.hearings.length > 0 && (
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -848,7 +853,6 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
@@ -891,8 +895,14 @@ const CaseModal = ({ case_, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"onClick={onClose}>
-      <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
           <h2 className="text-xl font-bold text-gray-900">
             {case_ ? "Edit Case" : "New Case"}
@@ -1131,6 +1141,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 <option value="flat_fee">Flat Fee</option>
                 <option value="contingency">Contingency</option>
                 <option value="retainer">Retainer</option>
+                <option value="mixed">Mixed</option>
               </select>
             </div>
           </div>
@@ -1191,6 +1202,543 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
             >
               {case_ ? "Update Case" : "Create Case"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Add Team Member Modal Component
+const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
+  const [formData, setFormData] = useState({
+    case_id: case_.case_id,
+    user_id: "",
+    role: "",
+    hourly_rate: "",
+    responsibilities: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.user_id || !formData.role) {
+      toast.error("Please fill in required fields");
+      return;
+    }
+    onSave(formData);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Add Team Member</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Case: {case_.case_number} - {case_.title}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              User ID <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              value={formData.user_id}
+              onChange={(e) =>
+                setFormData({ ...formData, user_id: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              placeholder="Enter user ID"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Role <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.role}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              placeholder="e.g., Lead Attorney, Paralegal, Associate"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Hourly Rate (Optional)
+            </label>
+            <input
+              type="text"
+              value={formData.hourly_rate}
+              onChange={(e) =>
+                setFormData({ ...formData, hourly_rate: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              placeholder="e.g., 150.00"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Responsibilities (Optional)
+            </label>
+            <textarea
+              value={formData.responsibilities}
+              onChange={(e) =>
+                setFormData({ ...formData, responsibilities: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              rows={3}
+              placeholder="Describe the team member's responsibilities..."
+            />
+          </div>
+
+          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+            >
+              Add Team Member
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Add Document Modal Component
+const AddDocumentModal = ({ case_, onClose, onSave }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState("");
+  const [userId, setUserId] = useState(null);
+  const fileInputRef = useRef(null);
+  const [selectedParentDoc, setSelectedParentDoc] = useState(undefined);
+  const [documents, setDocuments] = useState([]);
+
+  const { data: allDocuments = [] } = useGetDocumentsQuery();
+  const [updateDocument] = useUpdateDocumentMutation();
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    document_type: "other",
+    case_id: case_.case_id,
+    client_id: case_.client_id || undefined,
+    uploaded_by: userId || undefined,
+    access_level: "internal",
+    status: "draft",
+    parent_document_id: undefined,
+    is_template: false,
+    version: 1,
+  });
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("user_id");
+    if (storedUserId) {
+      setUserId(parseInt(storedUserId, 10));
+    }
+  }, []);
+
+  const parentDocuments = allDocuments.filter((doc) => !doc.parent_document_id);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("file", file);
+      formDataUpload.append("upload_preset", "ALL_Files");
+      formDataUpload.append("cloud_name", "dcwglllgt");
+      formDataUpload.append("folder", "LegalDocuments");
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dcwglllgt/auto/upload",
+        {
+          method: "POST",
+          body: formDataUpload,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      setUploadedFileUrl(data.secure_url);
+
+      setFormData((prev) => ({
+        ...prev,
+        title: prev.title || file.name.replace(/\.[^/.]+$/, ""),
+        file_name: file.name,
+        file_extension: file.name.split(".").pop() || "",
+        mime_type: file.type,
+        file_size: file.size,
+      }));
+
+      toast.success("File uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("Error uploading file. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const getNextVersionNumber = (parentDocId) => {
+    if (!parentDocId) return 1;
+
+    const versions = allDocuments.filter(
+      (doc) =>
+        doc.parent_document_id === parentDocId ||
+        doc.document_id === parentDocId
+    );
+
+    if (versions.length === 0) {
+      const parentDoc = allDocuments.find((d) => d.document_id === parentDocId);
+      return parentDoc ? (parentDoc.version || 1) + 1 : 1;
+    }
+
+    const maxVersion = Math.max(...versions.map((v) => v.version || 1));
+    return maxVersion + 1;
+  };
+
+  const handleParentDocumentChange = (parentDocId) => {
+    const parentId = parentDocId ? parseInt(parentDocId) : undefined;
+    const nextVersion = parentId ? getNextVersionNumber(parentId) : 1;
+
+    setFormData((prev) => ({
+      ...prev,
+      parent_document_id: parentId,
+      version: nextVersion,
+      is_latest_version: true,
+    }));
+
+    setSelectedParentDoc(parentId);
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (!uploadedFileUrl || !formData.title || !userId) {
+  //     toast.error("Please fill in all required fields and upload a file");
+  //     return;
+  //   }
+
+  //   onSave({
+  //     ...formData,
+  //     file_url: uploadedFileUrl,
+  //     uploaded_by: userId,
+  //   });
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!uploadedFileUrl || !formData.title || !userId) {
+      toast.error("Please fill in all required fields and upload a file");
+      return;
+    }
+
+    // If this is a new version, update the parent's is_latest_version to false
+    if (formData.parent_document_id) {
+      const parentId = formData.parent_document_id;
+
+      // Find all versions of this document and set is_latest_version to false
+      const relatedDocs = allDocuments.filter(
+        (doc) =>
+          doc.document_id === parentId || doc.parent_document_id === parentId
+      );
+
+      // You'll need to import and use updateDocument mutation
+      for (const doc of relatedDocs) {
+        if (doc.is_latest_version) {
+          await updateDocument({
+            document_id: doc.document_id,
+            is_latest_version: false,
+          }).unwrap();
+        }
+      }
+    }
+
+    onSave({
+      ...formData,
+      file_url: uploadedFileUrl,
+      uploaded_by: userId,
+      is_latest_version: true,
+    });
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileUpload}
+          className="hidden"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif"
+        />
+
+        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Add Document</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Case: {case_.case_number} - {case_.title}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="mb-6">
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-amber-600 transition-colors"
+            >
+              {isUploading ? (
+                <div className="flex flex-col items-center">
+                  <Loader2 className="h-12 w-12 text-amber-600 animate-spin mb-4" />
+                  <p className="text-gray-600">Uploading file...</p>
+                </div>
+              ) : uploadedFileUrl ? (
+                <div className="flex flex-col items-center">
+                  <FileText className="h-12 w-12 text-green-600 mb-4" />
+                  <p className="text-green-600 font-medium">
+                    File uploaded successfully!
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Click to upload a different file
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <Upload className="h-12 w-12 text-gray-400 mb-4" />
+                  <p className="text-gray-600 font-medium">
+                    Click to upload a document
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    PDF, DOC, DOCX, XLS, XLSX, or images
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="flex items-center gap-2">
+                <Folder className="h-4 w-4 text-gray-500" />
+                Parent Document (Optional - For Versioning)
+              </div>
+            </label>
+            <select
+              value={selectedParentDoc || ""}
+              onChange={(e) => handleParentDocumentChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+            >
+              <option value="">None - New Document</option>
+              {parentDocuments.map((doc) => (
+                <option key={doc.document_id} value={doc.document_id}>
+                  {doc.title} (v{doc.version || 1})
+                </option>
+              ))}
+            </select>
+            {selectedParentDoc && (
+              <p className="text-xs text-gray-500 mt-1">
+                This will be saved as version {formData.version}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              placeholder="Enter document title"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              rows={3}
+              placeholder="Enter document description..."
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Document Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.document_type}
+                onChange={(e) =>
+                  setFormData({ ...formData, document_type: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                required
+              >
+                <option value="contract">Contract</option>
+                <option value="court_filing">Court Filing</option>
+                <option value="evidence">Evidence</option>
+                <option value="correspondence">Correspondence</option>
+                <option value="legal_memo">Legal Memo</option>
+                <option value="pleading">Pleading</option>
+                <option value="motion">Motion</option>
+                <option value="brief">Brief</option>
+                <option value="affidavit">Affidavit</option>
+                <option value="deposition">Deposition</option>
+                <option value="settlement_agreement">
+                  Settlement Agreement
+                </option>
+                <option value="power_of_attorney">Power of Attorney</option>
+                <option value="will">Will</option>
+                <option value="invoice">Invoice</option>
+                <option value="receipt">Receipt</option>
+                <option value="identification">Identification</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Access Level <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.access_level}
+                onChange={(e) =>
+                  setFormData({ ...formData, access_level: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                required
+              >
+                <option value="internal">Internal</option>
+                <option value="public">Public</option>
+                <option value="confidential">Confidential</option>
+                <option value="highly_confidential">Highly Confidential</option>
+                <option value="attorney_client_privileged">
+                  Attorney-Client Privileged
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Status <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              required
+            >
+              <option value="draft">Draft</option>
+              <option value="pending_review">Pending Review</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="approved">Approved</option>
+              <option value="filed">Filed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <input
+              type="checkbox"
+              id="is_template"
+              checked={formData.is_template}
+              onChange={(e) =>
+                setFormData({ ...formData, is_template: e.target.checked })
+              }
+              className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <label htmlFor="is_template" className="flex-1 cursor-pointer">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-purple-600" />
+                <span className="text-sm font-medium text-gray-900">
+                  Mark as Template
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 mt-1">
+                Save this document as a reusable template for future use
+              </p>
+            </label>
+          </div>
+
+          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!uploadedFileUrl || isUploading}
+              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Add Document
             </button>
           </div>
         </form>

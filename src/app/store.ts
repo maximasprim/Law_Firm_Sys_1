@@ -1,15 +1,20 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import authReducer from '@/features/Registration/registrationSlice';
 import { casesApi } from '@/features/Cases/casesApi';
 import { registrationApi } from '@/features/Registration/registrationApi';
 import { passwordResetApi } from '@/features/PasswordReset/ResetApi';
+import { documentsApi } from '@/features/Documents/documentsApi';
+import { clientsApi } from '@/features/Clients/clientApi';
 
 const rootReducer = combineReducers({
-    // auth: authReducer,
+    auth: authReducer,
     [casesApi.reducerPath]: casesApi.reducer,
     [registrationApi.reducerPath]: registrationApi.reducer,
     [passwordResetApi.reducerPath]: passwordResetApi.reducer,
+    [documentsApi.reducerPath]: documentsApi.reducer,
+    [clientsApi.reducerPath]: clientsApi.reducer,
 });
 
 const persistConfig = {
@@ -24,7 +29,7 @@ export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         (getDefaultMiddleware() as any ).concat(casesApi.middleware).concat(registrationApi.middleware)
-    .concat(passwordResetApi.middleware),
+    .concat(passwordResetApi.middleware).concat(documentsApi.middleware).concat(clientsApi.middleware),
 }) as any;
 
 export const persistor = persistStore(store);

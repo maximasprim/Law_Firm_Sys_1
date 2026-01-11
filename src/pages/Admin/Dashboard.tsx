@@ -36,9 +36,9 @@ const LawFirmDashboard: React.FC = () => {
     { id: 'appointments', label: 'Appointments', icon: Calendar, badge: 8, component: <AppointmentsManagement /> },
     { id: 'hearings', label: 'Court Hearings', icon: Gavel, component: <CourtHearings /> },
     { id: 'documents', label: 'Documents', icon: FileText, component: <DocumentsManagement /> },
-    { id: 'billing', label: 'Billing & Invoices', icon: DollarSign, badge: 15, component: <BillingManagement /> },
+    // { id: 'billing', label: 'Billing & Invoices', icon: DollarSign, badge: 15, component: <BillingManagement /> },
     { id: 'team', label: 'Team Management', icon: UserCheck, component: <TeamManagement /> },
-    { id: 'reports', label: 'Reports & Analytics', icon: TrendingUp, component: <ReportsAnalytics /> },
+    // { id: 'reports', label: 'Reports & Analytics', icon: TrendingUp, component: <ReportsAnalytics /> },
   ];
 
   const currentComponent = menuItems.find(item => item.id === activeTab)?.component || <DashboardAnalytics />;
