@@ -8,6 +8,8 @@ import { passwordResetApi } from '@/features/PasswordReset/ResetApi';
 import { documentsApi } from '@/features/Documents/documentsApi';
 import { clientsApi } from '@/features/Clients/clientApi';
 import { appointmentsApi } from '@/features/Appointments/appointmentsApi';
+import { hearingsApi } from '@/features/Hearings/hearingsApi';
+import { notificationsApi } from '@/features/Alerts/alertApi';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -17,6 +19,8 @@ const rootReducer = combineReducers({
     [documentsApi.reducerPath]: documentsApi.reducer,
     [clientsApi.reducerPath]: clientsApi.reducer,
     [appointmentsApi.reducerPath]: appointmentsApi.reducer,
+    [hearingsApi.reducerPath]: hearingsApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
 });
 
 const persistConfig = {
@@ -32,7 +36,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         (getDefaultMiddleware() as any ).concat(casesApi.middleware).concat(registrationApi.middleware)
     .concat(passwordResetApi.middleware).concat(documentsApi.middleware).concat(clientsApi.middleware)
-    .concat(appointmentsApi.middleware),
+    .concat(appointmentsApi.middleware).concat(hearingsApi.middleware).concat(notificationsApi.middleware),
 }) as any;
 
 export const persistor = persistStore(store);

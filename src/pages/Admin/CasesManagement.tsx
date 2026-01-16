@@ -26,6 +26,7 @@ import {
   UserPlus,
   Upload,
   Folder,
+  Menu,
 } from "lucide-react";
 import {
   useGetCasesQuery,
@@ -43,8 +44,17 @@ import {
 import { useCreateCaseTeamMemberMutation } from "../../features/Team/teamApi";
 import { useGetDocumentsQuery } from "../../features/Documents/documentsApi";
 import { toast, Toaster } from "react-hot-toast";
+import { useGetClientsQuery } from "../../features/Clients/clientApi";
 
-const CasesManagement = () => {
+interface CasesManagementProps {
+  triggerNewCase?: boolean;
+  onNewCaseTriggered?: () => void;
+}
+
+const CasesManagement: React.FC<CasesManagementProps> = ({
+  triggerNewCase,
+  onNewCaseTriggered,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [showNewCaseModal, setShowNewCaseModal] = useState(false);
@@ -57,6 +67,15 @@ const CasesManagement = () => {
   const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
   const [selectedCaseForTeam, setSelectedCaseForTeam] = useState(null);
   const [selectedCaseForDocument, setSelectedCaseForDocument] = useState(null);
+
+  useEffect(() => {
+    if (triggerNewCase) {
+      setShowNewCaseModal(true);
+      if (onNewCaseTriggered) {
+        onNewCaseTriggered();
+      }
+    }
+  }, [triggerNewCase, onNewCaseTriggered]);
 
   // RTK Query hooks
   const {
@@ -201,7 +220,7 @@ const CasesManagement = () => {
 
   if (casesLoading) {
     return (
-      <div className="p-6 flex items-center justify-center h-64">
+      <div className="p-4 sm:p-6 flex items-center justify-center h-64">
         <div className="text-gray-600">Loading cases...</div>
       </div>
     );
@@ -209,8 +228,8 @@ const CasesManagement = () => {
 
   if (casesError && (!cases || cases.length === 0)) {
     return (
-      <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+      <div className="p-4 sm:p-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm sm:text-base">
           Error loading cases. Please check your API connection.
         </div>
       </div>
@@ -218,17 +237,17 @@ const CasesManagement = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-4 lg:p-6">
       <Toaster position="top-right" />
       {(isDeleting ||
         isCreating ||
         isUpdating ||
         isCreatingDocument ||
         isCreatingTeamMember) && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-[60]">
-          <div className="bg-white rounded-lg p-6 flex items-center gap-3 shadow-xl">
-            <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
-            <span className="text-gray-900 font-medium">
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 flex items-center gap-3 shadow-xl max-w-sm mx-auto">
+            <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-amber-600 flex-shrink-0" />
+            <span className="text-gray-900 font-medium text-sm sm:text-base">
               {isDeleting && "Deleting case..."}
               {isCreating && "Creating case..."}
               {isUpdating && "Updating case..."}
@@ -238,15 +257,19 @@ const CasesManagement = () => {
           </div>
         </div>
       )}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cases Management</h1>
-          <p className="text-gray-600 mt-1">Manage and track all legal cases</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Cases Management
+          </h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">
+            Manage and track all legal cases
+          </p>
         </div>
         <button
           onClick={() => refetchCases()}
           disabled={isFetching}
-          className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+          className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 self-end sm:self-auto"
         >
           <RefreshCw
             className={`w-5 h-5 ${isFetching ? "animate-spin" : ""}`}
@@ -255,65 +278,73 @@ const CasesManagement = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Cases</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                Total Cases
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">
                 {statsLoading ? "..." : statistics?.total_cases || cases.length}
               </p>
             </div>
-            <Briefcase className="h-8 w-8 text-amber-600" />
+            <Briefcase className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600 flex-shrink-0" />
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
+        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">In Progress</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                In Progress
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">
                 {statsLoading ? "..." : statistics?.in_progress_cases || 0}
               </p>
             </div>
-            <Clock className="h-8 w-8 text-blue-600" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
+        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Pending Court</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                Pending Court
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">
                 {statsLoading ? "..." : statistics?.pending_court_cases || 0}
               </p>
             </div>
-            <Gavel className="h-8 w-8 text-yellow-600" />
+            <Gavel className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600 flex-shrink-0" />
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
+        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Closed Cases</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                Closed Cases
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">
                 {statsLoading ? "..." : statistics?.closed_cases || 0}
               </p>
             </div>
-            <CheckCircle2 className="h-8 w-8 text-green-600" />
+            <CheckCircle2 className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0" />
           </div>
         </div>
       </div>
 
       {/* Filters and Actions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-          <div className="flex-1 w-full md:w-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+      <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 mb-4">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 w-full items-stretch">
+          <div className="w-full lg:flex-1">
+            <div className="relative h-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search cases by title, case number, description..."
+                placeholder="Search cases..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full h-full pl-9 sm:pl-10 pr-10 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
               {searchTerm && (
                 <button
@@ -325,11 +356,11 @@ const CasesManagement = () => {
               )}
             </div>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto lg:flex-shrink-0">
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
             >
               <option value="all">All Status</option>
               <option value="consultation">Consultation</option>
@@ -346,23 +377,24 @@ const CasesManagement = () => {
             </select>
             <button
               onClick={() => setShowNewCaseModal(true)}
-              className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center gap-2"
+              className="w-full sm:w-auto px-3 sm:px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center justify-center gap-2 text-sm sm:text-base whitespace-nowrap"
             >
-              <Plus className="h-5 w-5" />
-              <span className="hidden md:inline">New Case</span>
+              <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>New Case</span>
             </button>
             <button
               onClick={handleExport}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+              className="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
-              <Download className="h-5 w-5" />
+              <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>Export</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Cases Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      {/* Cases Table - Desktop */}
+      <div className="hidden lg:block bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -505,6 +537,113 @@ const CasesManagement = () => {
         </div>
       </div>
 
+      {/* Cases Cards - Mobile & Tablet */}
+      <div className="lg:hidden space-y-3">
+        {filteredCases.length === 0 ? (
+          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">
+            No cases found. {searchTerm && "Try adjusting your search."}
+          </div>
+        ) : (
+          filteredCases.map((case_) => (
+            <div
+              key={case_.case_id}
+              className="bg-white rounded-lg border border-gray-200 p-4 space-y-3"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-semibold text-gray-900 truncate">
+                    {case_.case_number}
+                  </h3>
+                  <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                    {case_.title}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setViewingCaseId(case_.case_id)}
+                  className="flex-shrink-0 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                >
+                  <Eye className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <span
+                  className={`px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(
+                    case_.status
+                  )}`}
+                >
+                  {case_.status.replace("_", " ")}
+                </span>
+                <span
+                  className={`px-2 py-1 text-xs font-medium rounded-full capitalize ${getPriorityColor(
+                    case_.priority
+                  )}`}
+                >
+                  {case_.priority}
+                </span>
+                <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 capitalize">
+                  {case_.case_type.replace("_", " ")}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-gray-500">Filing:</span>
+                  <span className="ml-1 text-gray-900 font-medium">
+                    {formatDate(case_.filing_date)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Trial:</span>
+                  <span className="ml-1 text-gray-900 font-medium">
+                    {formatDate(case_.trial_date)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setEditingCase(case_);
+                    setShowNewCaseModal(true);
+                  }}
+                  className="flex-1 px-3 py-2 text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span>Edit</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCaseForTeam(case_);
+                    setShowAddTeamModal(true);
+                  }}
+                  className="flex-1 px-3 py-2 text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>Team</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCaseForDocument(case_);
+                    setShowAddDocumentModal(true);
+                  }}
+                  className="flex-1 px-3 py-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                >
+                  <FilePlusIcon className="h-4 w-4" />
+                  <span>Docs</span>
+                </button>
+                <button
+                  onClick={() => handleDelete(case_.case_id)}
+                  className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       {/* Case Details Modal */}
       {viewingCaseId && (
         <CaseDetailsModal
@@ -617,9 +756,11 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8">
-          <div className="text-gray-600">Loading case details...</div>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg p-6 sm:p-8">
+          <div className="text-gray-600 text-sm sm:text-base">
+            Loading case details...
+          </div>
         </div>
       </div>
     );
@@ -629,33 +770,35 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <div
         className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+        <div className="p-4 sm:p-6 border-b border-gray-200 flex items-start sm:items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
               {caseDetails.case_number}
             </h2>
-            <p className="text-gray-600 mt-1">{caseDetails.title}</p>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base line-clamp-2">
+              {caseDetails.title}
+            </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="h-6 w-6 text-gray-600" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-wrap items-center gap-2">
               <span
-                className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${
+                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full capitalize ${
                   caseDetails.status === "in_progress"
                     ? "bg-blue-100 text-blue-700"
                     : caseDetails.status === "pending_court"
@@ -672,7 +815,7 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
                 {caseDetails.status.replace("_", " ")}
               </span>
               <span
-                className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${
+                className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full capitalize ${
                   caseDetails.priority === "critical"
                     ? "bg-red-600 text-white"
                     : caseDetails.priority === "urgent"
@@ -686,21 +829,21 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               >
                 {caseDetails.priority} Priority
               </span>
-              <span className="px-3 py-1 text-sm font-medium rounded-full capitalize bg-gray-100 text-gray-700">
+              <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full capitalize bg-gray-100 text-gray-700">
                 {caseDetails.case_type.replace("_", " ")}
               </span>
             </div>
 
             {caseDetails.client && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-amber-600" />
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   Client Information
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Phone</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs sm:text-sm text-gray-600">Phone</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">
                       {caseDetails.primaryAdvocate.contact_phone}
                     </p>
                   </div>
@@ -708,60 +851,72 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
               </div>
             )}
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-amber-600" />
+            <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                 Case Details
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {caseDetails.description && (
-                  <div className="col-span-2">
-                    <p className="text-sm text-gray-600">Description</p>
-                    <p className="text-sm text-gray-900 mt-1">
+                  <div className="sm:col-span-2">
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Description
+                    </p>
+                    <p className="text-xs sm:text-sm text-gray-900 mt-1">
                       {caseDetails.description}
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-sm text-gray-600">Filing Date</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    Filing Date
+                  </p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-900">
                     {formatDate(caseDetails.filing_date)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Trial Date</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-xs sm:text-sm text-gray-600">Trial Date</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-900">
                     {formatDate(caseDetails.trial_date)}
                   </p>
                 </div>
                 {caseDetails.opposing_party && (
                   <div>
-                    <p className="text-sm text-gray-600">Opposing Party</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Opposing Party
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">
                       {caseDetails.opposing_party}
                     </p>
                   </div>
                 )}
                 {caseDetails.court_name && (
                   <div>
-                    <p className="text-sm text-gray-600">Court Name</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Court Name
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">
                       {caseDetails.court_name}
                     </p>
                   </div>
                 )}
                 {caseDetails.judge_name && (
                   <div>
-                    <p className="text-sm text-gray-600">Judge Name</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Judge Name
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">
                       {caseDetails.judge_name}
                     </p>
                   </div>
                 )}
                 {caseDetails.billing_type && (
                   <div>
-                    <p className="text-sm text-gray-600">Billing Type</p>
-                    <p className="text-sm font-medium text-gray-900 capitalize">
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Billing Type
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 capitalize">
                       {caseDetails.billing_type.replace("_", " ")}
                     </p>
                   </div>
@@ -770,9 +925,9 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
             </div>
 
             {caseDetails.team && caseDetails.team.length > 0 && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Users className="h-5 w-5 text-amber-600" />
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   Case Team ({caseDetails.team.length})
                 </h3>
                 <div className="space-y-2">
@@ -781,8 +936,8 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
                       key={idx}
                       className="flex items-center justify-between p-2 bg-white rounded"
                     >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="min-w-0">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">
                           {member.user.full_name}
                         </p>
                         <p className="text-xs text-gray-600 capitalize">
@@ -796,24 +951,26 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
             )}
 
             {caseDetails.documents && caseDetails.documents.length > 0 && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-amber-600" />
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   Documents ({caseDetails.documents.length})
                 </h3>
                 <div className="space-y-2">
                   {caseDetails.documents.map((doc, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-2 bg-white rounded"
+                      className="flex items-center justify-between p-2 bg-white rounded gap-2"
                     >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">
                           {doc.title}
                         </p>
-                        <p className="text-xs text-gray-600">{doc.file_name}</p>
+                        <p className="text-xs text-gray-600 truncate">
+                          {doc.file_name}
+                        </p>
                       </div>
-                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full capitalize">
+                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full capitalize flex-shrink-0">
                         {doc.status}
                       </span>
                     </div>
@@ -823,17 +980,17 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
             )}
 
             {caseDetails.hearings && caseDetails.hearings.length > 0 && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Gavel className="h-5 w-5 text-amber-600" />
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Gavel className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   Court Hearings ({caseDetails.hearings.length})
                 </h3>
                 <div className="space-y-2">
                   {caseDetails.hearings.map((hearing, idx) => (
                     <div key={idx} className="p-2 bg-white rounded">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs sm:text-sm font-medium text-gray-900">
                             {hearing.title}
                           </p>
                           <p className="text-xs text-gray-600 mt-1">
@@ -841,7 +998,7 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
                             {formatDate(hearing.hearing_date)}
                           </p>
                         </div>
-                        <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full capitalize">
+                        <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full capitalize flex-shrink-0 self-start">
                           {hearing.status}
                         </span>
                       </div>
@@ -853,10 +1010,10 @@ const CaseDetailsModal = ({ caseId, onClose }) => {
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 sm:p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
+            className="w-full px-4 py-2 sm:py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm sm:text-base font-medium"
           >
             Close
           </button>
@@ -889,6 +1046,8 @@ const CaseModal = ({ case_, onClose, onSave }) => {
     notes: case_?.notes || "",
   });
 
+  const { data: clients = [] } = useGetClientsQuery();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
@@ -896,15 +1055,15 @@ const CaseModal = ({ case_, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <div
         className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white z-10">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
             {case_ ? "Edit Case" : "New Case"}
           </h2>
           <button
@@ -915,10 +1074,10 @@ const CaseModal = ({ case_, onClose, onSave }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Case Number *
               </label>
               <input
@@ -927,27 +1086,33 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, case_number: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Client ID
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Client
               </label>
-              <input
-                type="number"
+              <select
                 value={formData.client_id}
                 onChange={(e) =>
                   setFormData({ ...formData, client_id: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-              />
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                <option value="">Select a Client</option>
+                {clients.map((c) => (
+                  <option key={c.client_id} value={c.client_id}>
+                    {c.client_number} - {c.first_name} {c.last_name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Title *
             </label>
             <input
@@ -956,13 +1121,13 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -970,14 +1135,14 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               rows={3}
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Case Type *
               </label>
               <select
@@ -985,7 +1150,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, case_type: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               >
                 <option value="civil">Civil</option>
@@ -1006,7 +1171,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Status *
               </label>
               <select
@@ -1014,7 +1179,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, status: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               >
                 <option value="consultation">Consultation</option>
@@ -1031,7 +1196,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Priority *
               </label>
               <select
@@ -1039,7 +1204,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, priority: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               >
                 <option value="low">Low</option>
@@ -1051,9 +1216,9 @@ const CaseModal = ({ case_, onClose, onSave }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Opposing Party
               </label>
               <input
@@ -1062,11 +1227,11 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, opposing_party: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Opposing Counsel
               </label>
               <input
@@ -1075,14 +1240,14 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, opposing_counsel: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Court Name
               </label>
               <input
@@ -1091,11 +1256,11 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, court_name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Court Case Number
               </label>
               <input
@@ -1107,14 +1272,14 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                     court_case_number: e.target.value,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Judge Name
               </label>
               <input
@@ -1123,11 +1288,11 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, judge_name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Billing Type
               </label>
               <select
@@ -1135,7 +1300,7 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, billing_type: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               >
                 <option value="hourly">Hourly</option>
                 <option value="flat_fee">Flat Fee</option>
@@ -1146,9 +1311,9 @@ const CaseModal = ({ case_, onClose, onSave }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Filing Date
               </label>
               <input
@@ -1157,11 +1322,11 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, filing_date: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Trial Date
               </label>
               <input
@@ -1170,13 +1335,13 @@ const CaseModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, trial_date: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Notes
             </label>
             <textarea
@@ -1184,22 +1349,22 @@ const CaseModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, notes: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               rows={2}
             />
           </div>
 
-          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm sm:text-base font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+              className="w-full sm:w-auto px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm sm:text-base font-medium"
             >
               {case_ ? "Update Case" : "Create Case"}
             </button>
@@ -1231,31 +1396,33 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <div
         className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Add Team Member</h2>
-            <p className="text-sm text-gray-600 mt-1">
+        <div className="p-4 sm:p-6 border-b border-gray-200 flex items-start sm:items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+              Add Team Member
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
               Case: {case_.case_number} - {case_.title}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               User ID <span className="text-red-500">*</span>
             </label>
             <input
@@ -1264,14 +1431,14 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, user_id: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               placeholder="Enter user ID"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Role <span className="text-red-500">*</span>
             </label>
             <input
@@ -1280,14 +1447,14 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, role: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               placeholder="e.g., Lead Attorney, Paralegal, Associate"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Hourly Rate (Optional)
             </label>
             <input
@@ -1296,13 +1463,13 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, hourly_rate: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               placeholder="e.g., 150.00"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Responsibilities (Optional)
             </label>
             <textarea
@@ -1310,23 +1477,23 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, responsibilities: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               rows={3}
               placeholder="Describe the team member's responsibilities..."
             />
           </div>
 
-          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm sm:text-base font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+              className="w-full sm:w-auto px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm sm:text-base font-medium"
             >
               Add Team Member
             </button>
@@ -1449,20 +1616,6 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
     setSelectedParentDoc(parentId);
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!uploadedFileUrl || !formData.title || !userId) {
-  //     toast.error("Please fill in all required fields and upload a file");
-  //     return;
-  //   }
-
-  //   onSave({
-  //     ...formData,
-  //     file_url: uploadedFileUrl,
-  //     uploaded_by: userId,
-  //   });
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!uploadedFileUrl || !formData.title || !userId) {
@@ -1470,17 +1623,14 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
       return;
     }
 
-    // If this is a new version, update the parent's is_latest_version to false
     if (formData.parent_document_id) {
       const parentId = formData.parent_document_id;
 
-      // Find all versions of this document and set is_latest_version to false
       const relatedDocs = allDocuments.filter(
         (doc) =>
           doc.document_id === parentId || doc.parent_document_id === parentId
       );
 
-      // You'll need to import and use updateDocument mutation
       for (const doc of relatedDocs) {
         if (doc.is_latest_version) {
           await updateDocument({
@@ -1501,7 +1651,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <div
@@ -1516,49 +1666,53 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif"
         />
 
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Add Document</h2>
-            <p className="text-sm text-gray-600 mt-1">
+        <div className="p-4 sm:p-6 border-b border-gray-200 flex items-start sm:items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+              Add Document
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
               Case: {case_.case_number} - {case_.title}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="mb-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
+          <div className="mb-4 sm:mb-6">
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-amber-600 transition-colors"
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 sm:p-8 text-center cursor-pointer hover:border-amber-600 transition-colors"
             >
               {isUploading ? (
                 <div className="flex flex-col items-center">
-                  <Loader2 className="h-12 w-12 text-amber-600 animate-spin mb-4" />
-                  <p className="text-gray-600">Uploading file...</p>
+                  <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-amber-600 animate-spin mb-3 sm:mb-4" />
+                  <p className="text-gray-600 text-sm sm:text-base">
+                    Uploading file...
+                  </p>
                 </div>
               ) : uploadedFileUrl ? (
                 <div className="flex flex-col items-center">
-                  <FileText className="h-12 w-12 text-green-600 mb-4" />
-                  <p className="text-green-600 font-medium">
+                  <FileText className="h-10 w-10 sm:h-12 sm:w-12 text-green-600 mb-3 sm:mb-4" />
+                  <p className="text-green-600 font-medium text-sm sm:text-base">
                     File uploaded successfully!
                   </p>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-2">
                     Click to upload a different file
                   </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
-                  <Upload className="h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-600 font-medium">
+                  <Upload className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-3 sm:mb-4" />
+                  <p className="text-gray-600 font-medium text-sm sm:text-base">
                     Click to upload a document
                   </p>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-2">
                     PDF, DOC, DOCX, XLS, XLSX, or images
                   </p>
                 </div>
@@ -1567,16 +1721,16 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               <div className="flex items-center gap-2">
-                <Folder className="h-4 w-4 text-gray-500" />
-                Parent Document (Optional - For Versioning)
+                <Folder className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500" />
+                <span>Parent Document (Optional - For Versioning)</span>
               </div>
             </label>
             <select
               value={selectedParentDoc || ""}
               onChange={(e) => handleParentDocumentChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
             >
               <option value="">None - New Document</option>
               {parentDocuments.map((doc) => (
@@ -1593,7 +1747,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -1602,14 +1756,14 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               placeholder="Enter document title"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -1617,15 +1771,15 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               rows={3}
               placeholder="Enter document description..."
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Document Type <span className="text-red-500">*</span>
               </label>
               <select
@@ -1633,7 +1787,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, document_type: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               >
                 <option value="contract">Contract</option>
@@ -1659,7 +1813,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Access Level <span className="text-red-500">*</span>
               </label>
               <select
@@ -1667,7 +1821,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
                 onChange={(e) =>
                   setFormData({ ...formData, access_level: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                 required
               >
                 <option value="internal">Internal</option>
@@ -1682,7 +1836,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Status <span className="text-red-500">*</span>
             </label>
             <select
@@ -1690,7 +1844,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               required
             >
               <option value="draft">Draft</option>
@@ -1702,7 +1856,7 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
             </select>
           </div>
 
-          <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+          <div className="flex items-center gap-3 p-3 sm:p-4 bg-purple-50 rounded-lg border border-purple-200">
             <input
               type="checkbox"
               id="is_template"
@@ -1710,12 +1864,15 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
               onChange={(e) =>
                 setFormData({ ...formData, is_template: e.target.checked })
               }
-              className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 flex-shrink-0"
             />
-            <label htmlFor="is_template" className="flex-1 cursor-pointer">
+            <label
+              htmlFor="is_template"
+              className="flex-1 cursor-pointer min-w-0"
+            >
               <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-purple-600" />
-                <span className="text-sm font-medium text-gray-900">
+                <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-gray-900">
                   Mark as Template
                 </span>
               </div>
@@ -1725,18 +1882,18 @@ const AddDocumentModal = ({ case_, onClose, onSave }) => {
             </label>
           </div>
 
-          <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm sm:text-base font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!uploadedFileUrl || isUploading}
-              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base font-medium"
             >
               Add Document
             </button>

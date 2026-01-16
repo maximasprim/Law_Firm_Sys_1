@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   Calendar,
   Clock,
@@ -32,11 +32,14 @@ import { useGetCasesQuery } from "@/features/Cases/casesApi";
 import { useGetClientsQuery } from "@/features/Clients/clientApi";
 import {toast, Toaster} from 'react-hot-toast';
 
-const AppointmentsManagement = () => {
+interface AppointmentsManagementProps {
+  triggerScheduleAppointment?: boolean;
+  onScheduleAppointmentTriggered?: () => void;
+}
+
+const AppointmentsManagement: React.FC<AppointmentsManagementProps> = ({ triggerScheduleAppointment, onScheduleAppointmentTriggered }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [selectedDate, setSelectedDate] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [showNewModal, setShowNewModal] = useState(false);
@@ -44,10 +47,13 @@ const AppointmentsManagement = () => {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [loadingStates, setLoadingStates] = useState<{[key: number]: string}>({});
 
   // RTK Query hooks
+  const { data: allAppointments = [], isLoading: isLoadingAll } =
+    useGetAppointmentsQuery();
   const { data: appointmentsByDate = [], isLoading: isLoadingByDate } =
-    useGetAppointmentsByDateQuery(selectedDate);
+    useGetAppointmentsByDateQuery(selectedDate, { skip: !selectedDate });
   const { data: todayAppointments = [] } = useGetTodayAppointmentsQuery();
   const { data: statistics } = useGetAppointmentStatisticsQuery();
   const [createAppointment] = useCreateAppointmentMutation();
@@ -58,9 +64,18 @@ const AppointmentsManagement = () => {
   const [rescheduleAppointment] = useRescheduleAppointmentMutation();
   const [checkConflicts] = useCheckAppointmentConflictsMutation();
 
+  useEffect(() => {
+    if (triggerScheduleAppointment) {
+      setShowNewModal(true);
+      onScheduleAppointmentTriggered && onScheduleAppointmentTriggered();
+    }
+  }, [triggerScheduleAppointment, onScheduleAppointmentTriggered]);
+
   // Filter appointments
   const filteredAppointments = useMemo(() => {
-    return appointmentsByDate.filter((apt) => {
+    const appointments = selectedDate ? appointmentsByDate : allAppointments;
+    
+    return appointments.filter((apt) => {
       const matchesSearch =
         apt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         apt.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,7 +88,7 @@ const AppointmentsManagement = () => {
 
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [appointmentsByDate, searchTerm, filterStatus, filterType]);
+  }, [allAppointments, appointmentsByDate, selectedDate, searchTerm, filterStatus, filterType]);
 
   // Count virtual meetings and court hearings from today's appointments
   const virtualMeetings = todayAppointments.filter(
@@ -84,21 +99,35 @@ const AppointmentsManagement = () => {
   ).length;
 
   const handleMarkComplete = async (id: number) => {
+    setLoadingStates(prev => ({...prev, [id]: 'completing'}));
     try {
       await markCompleted(id).unwrap();
       toast.success("Appointment marked as completed");
     } catch (error) {
       toast.error("Failed to mark appointment as completed");
+    } finally {
+      setLoadingStates(prev => {
+        const newState = {...prev};
+        delete newState[id];
+        return newState;
+      });
     }
   };
 
   const handleCancel = async (id: number) => {
     if (confirm("Are you sure you want to cancel this appointment?")) {
+      setLoadingStates(prev => ({...prev, [id]: 'cancelling'}));
       try {
         await cancelAppointment(id).unwrap();
         toast.success("Appointment cancelled");
       } catch (error) {
         toast.error("Failed to cancel appointment");
+      } finally {
+        setLoadingStates(prev => {
+          const newState = {...prev};
+          delete newState[id];
+          return newState;
+        });
       }
     }
   };
@@ -109,12 +138,19 @@ const AppointmentsManagement = () => {
         "Are you sure you want to delete this appointment? This cannot be undone."
       )
     ) {
+      setLoadingStates(prev => ({...prev, [id]: 'deleting'}));
       try {
         await deleteAppointment(id).unwrap();
         setShowDetailsModal(false);
         toast.success("Appointment deleted");
       } catch (error) {
         toast.error("Failed to delete appointment");
+      } finally {
+        setLoadingStates(prev => {
+          const newState = {...prev};
+          delete newState[id];
+          return newState;
+        });
       }
     }
   };
@@ -168,58 +204,58 @@ const AppointmentsManagement = () => {
     <div className="p-4 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900">
           Appointments Management
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-sm md:text-base text-gray-600 mt-1">
           Schedule and manage client appointments
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Today's Appointments</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs md:text-sm text-gray-600">Today's Appointments</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">
                 {todayAppointments.length}
               </p>
             </div>
-            <Calendar className="h-8 w-8 text-blue-600" />
+            <Calendar className="h-6 w-6 md:h-8 md:w-8 text-blue-600" />
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Appointments</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs md:text-sm text-gray-600">Total Appointments</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">
                 {statistics?.total_appointments || 0}
               </p>
             </div>
-            <Clock className="h-8 w-8 text-green-600" />
+            <Clock className="h-6 w-6 md:h-8 md:w-8 text-green-600" />
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Virtual Meetings</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs md:text-sm text-gray-600">Virtual Meetings</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">
                 {virtualMeetings}
               </p>
             </div>
-            <Video className="h-8 w-8 text-purple-600" />
+            <Video className="h-6 w-6 md:h-8 md:w-8 text-purple-600" />
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Court Hearings</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xs md:text-sm text-gray-600">Court Hearings</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">
                 {courtHearings}
               </p>
             </div>
-            <Users className="h-8 w-8 text-amber-600" />
+            <Users className="h-6 w-6 md:h-8 md:w-8 text-amber-600" />
           </div>
         </div>
       </div>
@@ -238,7 +274,7 @@ const AppointmentsManagement = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
               />
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
@@ -278,7 +314,7 @@ const AppointmentsManagement = () => {
             />
             <button
               onClick={() => setShowNewModal(true)}
-              className="px-2 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center gap-2 whitespace-nowrap"
+              className="px-2 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center gap-2 whitespace-nowrap justify-center"
             >
               <Plus className="h-5 w-5" />
               <span>New Appointment</span>
@@ -288,7 +324,7 @@ const AppointmentsManagement = () => {
       </div>
 
       {/* Appointments List */}
-      {isLoadingByDate ? (
+      {(selectedDate ? isLoadingByDate : isLoadingAll) ? (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
           <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
           <p className="text-gray-600">Loading appointments...</p>
@@ -364,7 +400,8 @@ const AppointmentsManagement = () => {
                               setSelectedAppointment(apt);
                               setShowRescheduleModal(true);
                             }}
-                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-1"
+                            disabled={!!loadingStates[apt.appointment_id]}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <RotateCcw className="h-4 w-4" />
                             Reschedule
@@ -373,17 +410,19 @@ const AppointmentsManagement = () => {
                             onClick={() =>
                               handleMarkComplete(apt.appointment_id)
                             }
-                            className="px-3 py-2 border border-green-300 text-green-700 rounded-lg hover:bg-green-50 text-sm flex items-center gap-1"
+                            disabled={!!loadingStates[apt.appointment_id]}
+                            className="px-3 py-2 border border-green-300 text-green-700 rounded-lg hover:bg-green-50 text-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <Check className="h-4 w-4" />
-                            Complete
+                            {loadingStates[apt.appointment_id] === 'completing' ? 'Completing...' : 'Complete'}
                           </button>
                           <button
                             onClick={() => handleCancel(apt.appointment_id)}
-                            className="px-3 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 text-sm flex items-center gap-1"
+                            disabled={!!loadingStates[apt.appointment_id]}
+                            className="px-3 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 text-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <Ban className="h-4 w-4" />
-                            Cancel
+                            {loadingStates[apt.appointment_id] === 'cancelling' ? 'Cancelling...' : 'Cancel'}
                           </button>
                         </>
                       )}
@@ -392,7 +431,8 @@ const AppointmentsManagement = () => {
                         setSelectedAppointment(apt);
                         setShowDetailsModal(true);
                       }}
-                      className="px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm flex items-center gap-1"
+                      disabled={!!loadingStates[apt.appointment_id]}
+                      className="px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <FileText className="h-4 w-4" />
                       Details
@@ -405,15 +445,11 @@ const AppointmentsManagement = () => {
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
               <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600">
-                No appointments found for the selected date
+                {selectedDate 
+                  ? "No appointments found for the selected date"
+                  : "No appointments found"
+                }
               </p>
-              {/* <button 
-                onClick={() => setShowNewModal(true)}
-                className="mt-4 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 inline-flex items-center gap-2"
-              >
-                <Plus className="h-5 w-5" />
-                Create New Appointment
-              </button> */}
             </div>
           )}
         </div>
@@ -433,6 +469,7 @@ const AppointmentsManagement = () => {
           appointment={selectedAppointment}
           onClose={() => setShowDetailsModal(false)}
           onDelete={handleDelete}
+          isDeleting={loadingStates[selectedAppointment.appointment_id] === 'deleting'}
         />
       )}
 
@@ -461,12 +498,26 @@ const NewAppointmentModal = ({ onClose, onCreate }: any) => {
     case_id: "",
     client_id: "",
   });
+  const [isCreating, setIsCreating] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const { data: cases = [] } = useGetCasesQuery();
   const { data: clients = [] } = useGetClientsQuery();
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsCreating(true);
     try {
       const data: any = {
         title: formData.title,
@@ -486,12 +537,14 @@ const NewAppointmentModal = ({ onClose, onCreate }: any) => {
       onClose();
     } catch (error) {
       toast.error("Failed to create appointment");
+    } finally {
+      setIsCreating(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div ref={modalRef} className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">New Appointment</h2>
           <button
@@ -642,7 +695,7 @@ const NewAppointmentModal = ({ onClose, onCreate }: any) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Client *
+                Client
               </label>
               <select
                 value={formData.client_id}
@@ -667,15 +720,17 @@ const NewAppointmentModal = ({ onClose, onCreate }: any) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              disabled={isCreating}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+              disabled={isCreating}
+              className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Create Appointment
+              {isCreating ? 'Creating...' : 'Create Appointment'}
             </button>
           </div>
         </form>
@@ -685,7 +740,20 @@ const NewAppointmentModal = ({ onClose, onCreate }: any) => {
 };
 
 // Details Modal Component
-const DetailsModal = ({ appointment, onClose, onDelete }: any) => {
+const DetailsModal = ({ appointment, onClose, onDelete, isDeleting }: any) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
   const formatTime = (datetime: string) => {
     return new Date(datetime).toLocaleString("en-US", {
       year: "numeric",
@@ -699,7 +767,7 @@ const DetailsModal = ({ appointment, onClose, onDelete }: any) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div ref={modalRef} className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">
             Appointment Details
@@ -803,15 +871,17 @@ const DetailsModal = ({ appointment, onClose, onDelete }: any) => {
           <div className="flex gap-3 pt-4 border-t border-gray-200">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              disabled={isDeleting}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Close
             </button>
             <button
               onClick={() => onDelete(appointment.appointment_id)}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              disabled={isDeleting}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Delete Appointment
+              {isDeleting ? 'Deleting...' : 'Delete Appointment'}
             </button>
           </div>
         </div>
@@ -824,9 +894,23 @@ const DetailsModal = ({ appointment, onClose, onDelete }: any) => {
 const RescheduleModal = ({ appointment, onClose, onReschedule }: any) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [isRescheduling, setIsRescheduling] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsRescheduling(true);
     try {
       await onReschedule({
         appointment_id: appointment.appointment_id,
@@ -837,12 +921,14 @@ const RescheduleModal = ({ appointment, onClose, onReschedule }: any) => {
       onClose();
     } catch (error) {
       toast.error("Failed to reschedule appointment");
+    } finally {
+      setIsRescheduling(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full">
+      <div ref={modalRef} className="bg-white rounded-lg max-w-md w-full">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">
             Reschedule Appointment
@@ -895,15 +981,17 @@ const RescheduleModal = ({ appointment, onClose, onReschedule }: any) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              disabled={isRescheduling}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+              disabled={isRescheduling}
+              className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Reschedule
+              {isRescheduling ? 'Rescheduling...' : 'Reschedule'}
             </button>
           </div>
         </form>
