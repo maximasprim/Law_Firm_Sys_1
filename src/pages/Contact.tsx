@@ -4,13 +4,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Loader2, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  useGetContactInfoQuery, 
+  useSubmitContactFormMutation,
+  type ContactFormData 
+} from "@/features/Contact/contactApi";
 
 const Contact = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
+  
+  // RTK Query hooks
+  const { data: contactInfo, isLoading: isLoadingInfo, error: infoError } = useGetContactInfoQuery();
+  const [submitContactForm, { isLoading: isSubmitting }] = useSubmitContactFormMutation();
+
+  const [formData, setFormData] = useState<ContactFormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -19,24 +29,84 @@ const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll respond within 24 hours.",
-    });
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
+
+    console.log('Form data being sent:', formData);
+    try {
+      const response = await submitContactForm(formData).unwrap();
+      
+      toast({
+        title: "Message Sent Successfully!",
+        description: (
+          <div className="flex flex-col gap-2">
+            <p>{response.message}</p>
+            <p className="text-sm font-semibold">Reference: {response.data.referenceNumber}</p>
+            <p className="text-xs opacity-80">Expected response time: {response.data.estimatedResponse}</p>
+          </div>
+        ),
+        duration: 5000,
+      });
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error: any) {
+      const errorMessage = error?.data?.error || "Failed to send message. Please try again or contact us directly.";
+      const supportPhone = error?.data?.supportPhone;
+      const supportEmail = error?.data?.supportEmail;
+
+      toast({
+        title: "Error Sending Message",
+        description: (
+          <div className="flex flex-col gap-2">
+            <p>{errorMessage}</p>
+            {supportPhone && (
+              <p className="text-sm">Call us: <span className="font-semibold">{supportPhone}</span></p>
+            )}
+            {supportEmail && (
+              <p className="text-sm">Email: <span className="font-semibold">{supportEmail}</span></p>
+            )}
+          </div>
+        ),
+        variant: "destructive",
+        duration: 7000,
+      });
+    }
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: keyof ContactFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Subject mapping for display
+  const subjectDisplayMap: { [key: string]: string } = {
+    'consultation': 'Free Consultation',
+    'corporate': 'Corporate & Commercial Law',
+    'litigation': 'Litigation & Dispute Resolution',
+    'family': 'Family & Matrimonial Law',
+    'land': 'Land & Property Law',
+    'employment': 'Employment & Labour Law',
+    'criminal': 'Criminal Defense',
+    'other': 'Other'
+  };
+
+  // Get contact data with fallbacks
+  const contactData = {
+    address: contactInfo?.data?.contacts?.address || "West End Towers, 2nd Floor\nWaiyaki Way, Westlands",
+    phones: contactInfo?.data?.contacts?.phone || ["+254 727 783 214", "+254 202 270 000"],
+    emails: contactInfo?.data?.contacts?.email || ["info@owinokojoadvocates.com", "consult@owinokojoadvocates.com"],
+    officeHours: {
+      weekdays: contactInfo?.data?.officeHours?.weekdays || "Mon-Fri: 8AM - 5PM",
+      saturday: contactInfo?.data?.officeHours?.saturday || "Sat: 10AM - 2PM"
+    },
+    subjects: contactInfo?.data?.subjects || Object.values(subjectDisplayMap)
   };
 
   return (
@@ -58,44 +128,50 @@ const Contact = () => {
       {/* Contact Information Cards */}
       <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: MapPin,
-                title: "Visit Us",
-                content: "West End Towers, 2nd Floor\nWaiyaki Way, Westlands",
-              },
-              {
-                icon: Phone,
-                title: "Call Us",
-                content: "+254 727 783 214\n+254 202 270 000",
-              },
-              {
-                icon: Mail,
-                title: "Email Us",
-                content: "info@owinokojoadvocates.com\nconsult@owinokojoadvocates.com",
-              },
-              {
-                icon: Clock,
-                title: "Office Hours",
-                content: "Mon-Fri: 8AM - 5PM\nSat: 10AM - 2PM",
-              },
-            ].map((item, index) => (
-              <Card key={index} className="text-center hover:shadow-elegant transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <CardContent className="p-6">
-                  <div className="mb-4 mx-auto p-3 bg-primary/10 rounded-full w-fit">
-                    <item.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-display font-semibold text-lg mb-2 text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground whitespace-pre-line">
-                    {item.content}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoadingInfo ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: MapPin,
+                  title: "Visit Us",
+                  content: contactData.address,
+                },
+                {
+                  icon: Phone,
+                  title: "Call Us",
+                  content: contactData.phones.join('\n'),
+                },
+                {
+                  icon: Mail,
+                  title: "Email Us",
+                  content: contactData.emails.join('\n'),
+                },
+                {
+                  icon: Clock,
+                  title: "Office Hours",
+                  content: `${contactData.officeHours.weekdays}\n${contactData.officeHours.saturday}`,
+                },
+              ].map((item, index) => (
+                <Card key={index} className="text-center hover:shadow-elegant transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
+                  <CardContent className="p-6">
+                    <div className="mb-4 mx-auto p-3 bg-primary/10 rounded-full w-fit">
+                      <item.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="font-display font-semibold text-lg mb-2 text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                      {item.content}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -112,32 +188,36 @@ const Contact = () => {
                 Fill out the form below and one of our experienced advocates will get back to you within 24 hours.
               </p>
 
-              <div className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName">First Name *</Label>
                     <Input
                       id="firstName"
                       value={formData.firstName}
                       onChange={(e) => handleChange("firstName", e.target.value)}
                       required
                       className="mt-2"
+                      disabled={isSubmitting}
+                      // placeholder="John"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName">Last Name *</Label>
                     <Input
                       id="lastName"
                       value={formData.lastName}
                       onChange={(e) => handleChange("lastName", e.target.value)}
                       required
                       className="mt-2"
+                      disabled={isSubmitting}
+                      // placeholder="Doe"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -145,6 +225,8 @@ const Contact = () => {
                     onChange={(e) => handleChange("email", e.target.value)}
                     required
                     className="mt-2"
+                    disabled={isSubmitting}
+                    // placeholder="john.doe@example.com"
                   />
                 </div>
 
@@ -157,30 +239,38 @@ const Contact = () => {
                     onChange={(e) => handleChange("phone", e.target.value)}
                     placeholder="+254 7XX XXX XXX"
                     className="mt-2"
+                    disabled={isSubmitting}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="subject">Subject</Label>
-                  <Select value={formData.subject} onValueChange={(value) => handleChange("subject", value)}>
+                  <Label htmlFor="subject">Subject *</Label>
+                  <Select 
+                    value={formData.subject} 
+                    onValueChange={(value) => handleChange("subject", value)}
+                    disabled={isSubmitting || isLoadingInfo}
+                  >
                     <SelectTrigger className="mt-2">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="consultation">Free Consultation</SelectItem>
-                      <SelectItem value="corporate">Corporate & Commercial Law</SelectItem>
-                      <SelectItem value="litigation">Litigation & Dispute Resolution</SelectItem>
-                      <SelectItem value="family">Family & Matrimonial Law</SelectItem>
-                      <SelectItem value="land">Land & Property Law</SelectItem>
-                      <SelectItem value="employment">Employment & Labour Law</SelectItem>
-                      <SelectItem value="criminal">Criminal Defense</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      {isLoadingInfo ? (
+                        <div className="flex items-center justify-center p-4">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        </div>
+                      ) : (
+                        Object.entries(subjectDisplayMap).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">Message *</Label>
                   <Textarea
                     id="message"
                     value={formData.message}
@@ -189,17 +279,29 @@ const Contact = () => {
                     rows={6}
                     className="mt-2"
                     placeholder="Tell us about your legal needs..."
+                    disabled={isSubmitting}
                   />
                 </div>
 
                 <Button 
-                  onClick={handleSubmit}
+                  type="submit"
                   size="lg" 
                   className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold"
+                  disabled={isSubmitting}
                 >
-                  Send Message
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending Message...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Send Message
+                    </>
+                  )}
                 </Button>
-              </div>
+              </form>
             </div>
 
             {/* Additional Information */}
@@ -239,8 +341,17 @@ const Contact = () => {
                   <Button 
                     size="lg" 
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+                    onClick={() => window.location.href = `tel:${contactData.phones[0]}`}
+                    disabled={isLoadingInfo}
                   >
-                    Call Now: +254 727 783 214
+                    {isLoadingInfo ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      <>Call Now: {contactData.phones[0]}</>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -257,16 +368,22 @@ const Contact = () => {
               Find Us in Nairobi
             </h2>
             <div className="aspect-video rounded-2xl overflow-hidden shadow-elegant bg-primary/5 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                <p className="text-muted-foreground mb-2 font-semibold">
-                  Owino Kojo & Co. Advocates
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  West End Towers<br />
-                  2nd Floor, Waiyaki Way, Westlands
-                </p>
-              </div>
+              {isLoadingInfo ? (
+                <div className="flex items-center gap-3">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <span className="text-muted-foreground">Loading location...</span>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-2 font-semibold">
+                    Owino Kojo & Co. Advocates
+                  </p>
+                  <p className="text-muted-foreground text-sm whitespace-pre-line">
+                    {contactData.address}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

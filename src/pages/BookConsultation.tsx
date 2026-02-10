@@ -3,15 +3,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Clock, CheckCircle2, Phone, Video, MapPin, Loader2 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  CheckCircle2,
+  Phone,
+  Video,
+  MapPin,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useCreateAppointmentMutation, useCheckAppointmentConflictsMutation } from "@/features/Appointments/appointmentsApi";
+import {
+  useCreateAppointmentMutation,
+  useCheckAppointmentConflictsMutation,
+} from "@/features/Appointments/appointmentsApi";
 
 const BookConsultation = () => {
   const { toast } = useToast();
@@ -28,18 +49,25 @@ const BookConsultation = () => {
   });
 
   // RTK Query hooks
-  const [createAppointment, { isLoading: isCreating }] = useCreateAppointmentMutation();
-  const [checkConflicts, { isLoading: isCheckingConflicts }] = useCheckAppointmentConflictsMutation();
+  const [createAppointment, { isLoading: isCreating }] =
+    useCreateAppointmentMutation();
+  const [checkConflicts, { isLoading: isCheckingConflicts }] =
+    useCheckAppointmentConflictsMutation();
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
-    if (!date || !formData.timeSlot || !formData.consultationType || !formData.practiceArea) {
+    if (
+      !date ||
+      !formData.timeSlot ||
+      !formData.consultationType ||
+      !formData.practiceArea
+    ) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -53,7 +81,7 @@ const BookConsultation = () => {
       const [time, period] = formData.timeSlot.split(" ");
       const [hours, minutes] = time.split(":");
       let hour = parseInt(hours);
-      
+
       // Convert to 24-hour format
       if (period === "PM" && hour !== 12) {
         hour += 12;
@@ -64,7 +92,7 @@ const BookConsultation = () => {
       // Create start_time
       const startTime = new Date(date);
       startTime.setHours(hour, parseInt(minutes), 0, 0);
-      
+
       // Create end_time (1 hour later for consultation)
       const endTime = new Date(startTime);
       endTime.setHours(startTime.getHours() + 1);
@@ -79,31 +107,39 @@ const BookConsultation = () => {
       if (conflictCheck.has_conflicts) {
         toast({
           title: "Time Slot Unavailable",
-          description: "This time slot is already booked. Please select a different time.",
+          description:
+            "This time slot is already booked. Please select a different time.",
           variant: "destructive",
         });
         return;
       }
 
       // Map consultation type to appointment type
-      const appointmentTypeMap: Record<string, "consultation" | "phone_call" | "video_conference"> = {
+      const appointmentTypeMap: Record<
+        string,
+        "consultation" | "phone_call" | "video_conference"
+      > = {
         "in-person": "consultation",
-        "phone": "phone_call",
-        "video": "video_conference",
+        phone: "phone_call",
+        video: "video_conference",
       };
 
       // Prepare appointment data
       const appointmentData = {
         title: `${formData.practiceArea} Consultation - ${formData.firstName} ${formData.lastName}`,
-        description: formData.message || `Consultation request for ${formData.practiceArea}`,
-        appointment_type: appointmentTypeMap[formData.consultationType] || "consultation",
+        description:
+          formData.message ||
+          `Consultation request for ${formData.practiceArea}`,
+        appointment_type:
+          appointmentTypeMap[formData.consultationType] || "consultation",
         start_time: startTime.toISOString(),
         end_time: endTime.toISOString(),
-        location: formData.consultationType === "in-person" 
-          ? "Owino Kojo Advocates Office" 
-          : formData.consultationType === "phone" 
-            ? `Phone: ${formData.phone}`
-            : "Video Conference (Link to be shared)",
+        location:
+          formData.consultationType === "in-person"
+            ? "Owino Kojo Advocates Office"
+            : formData.consultationType === "phone"
+              ? `Phone: ${formData.phone}`
+              : "Video Conference (Link to be shared)",
         status: "scheduled" as const,
         notes: `
 Contact Information:
@@ -113,7 +149,7 @@ Contact Information:
 - Practice Area: ${formData.practiceArea}
 - Consultation Type: ${formData.consultationType}
 
-${formData.message ? `Additional Notes:\n${formData.message}` : ''}
+${formData.message ? `Additional Notes:\n${formData.message}` : ""}
         `.trim(),
       };
 
@@ -146,7 +182,7 @@ ${formData.message}
       `.trim();
 
       const mailtoLink = `mailto:owinokojoadvocates@gmail.com?subject=Consultation Request - ${formData.firstName} ${formData.lastName}&body=${encodeURIComponent(emailBody)}`;
-      
+
       // Optional: Open email client as backup notification
       setTimeout(() => {
         window.location.href = mailtoLink;
@@ -164,21 +200,29 @@ ${formData.message}
         message: "",
       });
       setDate(undefined);
-
     } catch (error: any) {
       console.error("Error creating appointment:", error);
-      
+
       toast({
         title: "Booking Failed",
-        description: error?.data?.error || "Failed to book consultation. Please try again or contact us directly.",
+        description:
+          error?.data?.error ||
+          "Failed to book consultation. Please try again or contact us directly.",
         variant: "destructive",
       });
     }
   };
 
   const timeSlots = [
-    "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
-    "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
   ];
 
   const consultationTypes = [
@@ -199,7 +243,8 @@ ${formData.message}
               Book Your Free Consultation
             </h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Schedule a complimentary consultation with one of our experienced advocates. No obligations, just expert legal guidance.
+              Schedule a complimentary consultation with one of our experienced
+              advocates. No obligations, just expert legal guidance.
             </p>
           </div>
         </div>
@@ -210,16 +255,36 @@ ${formData.message}
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { icon: CheckCircle2, title: "100% Free", description: "No cost, no obligations" },
-              { icon: Clock, title: "30-60 Minutes", description: "Comprehensive case review" },
-              { icon: Phone, title: "Multiple Options", description: "In-person, phone, or video" },
+              {
+                icon: CheckCircle2,
+                title: "100% Free",
+                description: "No cost, no obligations",
+              },
+              {
+                icon: Clock,
+                title: "30-60 Minutes",
+                description: "Comprehensive case review",
+              },
+              {
+                icon: Phone,
+                title: "Multiple Options",
+                description: "In-person, phone, or video",
+              },
             ].map((item, index) => (
-              <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <div
+                key={index}
+                className="text-center animate-scale-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit">
                   <item.icon className="h-8 w-8 text-accent" />
                 </div>
-                <h3 className="font-display font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
+                <h3 className="font-display font-semibold text-foreground mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
@@ -244,7 +309,9 @@ ${formData.message}
                         <Input
                           id="firstName"
                           value={formData.firstName}
-                          onChange={(e) => handleChange("firstName", e.target.value)}
+                          onChange={(e) =>
+                            handleChange("firstName", e.target.value)
+                          }
                           required
                           className="mt-2"
                           disabled={isSubmitting}
@@ -255,7 +322,9 @@ ${formData.message}
                         <Input
                           id="lastName"
                           value={formData.lastName}
-                          onChange={(e) => handleChange("lastName", e.target.value)}
+                          onChange={(e) =>
+                            handleChange("lastName", e.target.value)
+                          }
                           required
                           className="mt-2"
                           disabled={isSubmitting}
@@ -267,7 +336,9 @@ ${formData.message}
                           id="email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => handleChange("email", e.target.value)}
+                          onChange={(e) =>
+                            handleChange("email", e.target.value)
+                          }
                           required
                           className="mt-2"
                           disabled={isSubmitting}
@@ -280,7 +351,9 @@ ${formData.message}
                           type="tel"
                           placeholder="+254..."
                           value={formData.phone}
-                          onChange={(e) => handleChange("phone", e.target.value)}
+                          onChange={(e) =>
+                            handleChange("phone", e.target.value)
+                          }
                           required
                           className="mt-2"
                           disabled={isSubmitting}
@@ -294,33 +367,52 @@ ${formData.message}
                     <h3 className="text-2xl font-display font-bold text-primary mb-6">
                       Consultation Details
                     </h3>
-                    
+
                     <div className="space-y-6">
                       <div>
                         <Label>Practice Area *</Label>
-                        <Select 
-                          value={formData.practiceArea} 
-                          onValueChange={(value) => handleChange("practiceArea", value)}
+                        <Select
+                          value={formData.practiceArea}
+                          onValueChange={(value) =>
+                            handleChange("practiceArea", value)
+                          }
                           disabled={isSubmitting}
                         >
                           <SelectTrigger className="mt-2">
                             <SelectValue placeholder="Select practice area" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Legal Risk Audit & Management">Legal Risk Audit & Management</SelectItem>
-                            <SelectItem value="Corporate Governance">Corporate Governance</SelectItem>
-                            <SelectItem value="Commercial Law">Commercial Law</SelectItem>
-                            <SelectItem value="Banking & Financing Law">Banking & Financing Law</SelectItem>
-                            <SelectItem value="Insurance Law">Insurance Law</SelectItem>
-                            <SelectItem value="Property Law & Conveyancing">Property Law & Conveyancing</SelectItem>
-                            <SelectItem value="Recoveries & Debt Management">Recoveries & Debt Management</SelectItem>
-                            <SelectItem value="Information Technology Law">Information Technology Law</SelectItem>
-                            <SelectItem value="Intellectual Property Law">Intellectual Property Law</SelectItem>
-                            <SelectItem value="Human Resource Law">Human Resource Law</SelectItem>
-                            <SelectItem value="Litigation">Litigation</SelectItem>
-                            <SelectItem value="Non-Governmental Organizations">Non-Governmental Organizations</SelectItem>
-                            <SelectItem value="Enterprise Risk Management">Enterprise Risk Management</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="civil">Civil Law</SelectItem>
+                            <SelectItem value="criminal">
+                              Criminal Law
+                            </SelectItem>
+                            <SelectItem value="family">Family Law</SelectItem>
+                            <SelectItem value="corporate">
+                              Corporate & Commercial Law
+                            </SelectItem>
+                            <SelectItem value="real_estate">
+                              Property Law & Conveyancing
+                            </SelectItem>
+                            <SelectItem value="intellectual_property">
+                              Intellectual Property Law
+                            </SelectItem>
+                            <SelectItem value="employment">
+                              Employment & Human Resource Law
+                            </SelectItem>
+                            <SelectItem value="immigration">
+                              Immigration Law
+                            </SelectItem>
+                            <SelectItem value="tax">Tax Law</SelectItem>
+                            <SelectItem value="bankruptcy">
+                              Bankruptcy & Insolvency
+                            </SelectItem>
+                            <SelectItem value="personal_injury">
+                              Personal Injury
+                            </SelectItem>
+                            <SelectItem value="contract_dispute">
+                              Contract Disputes
+                            </SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -336,13 +428,18 @@ ${formData.message}
                                 formData.consultationType === type.value
                                   ? "border-accent border-2 shadow-gold"
                                   : "border-border hover:border-accent",
-                                isSubmitting && "opacity-50 cursor-not-allowed"
+                                isSubmitting && "opacity-50 cursor-not-allowed",
                               )}
-                              onClick={() => !isSubmitting && handleChange("consultationType", type.value)}
+                              onClick={() =>
+                                !isSubmitting &&
+                                handleChange("consultationType", type.value)
+                              }
                             >
                               <CardContent className="p-4 text-center">
                                 <type.icon className="h-8 w-8 mx-auto mb-2 text-primary" />
-                                <div className="font-semibold text-sm">{type.label}</div>
+                                <div className="font-semibold text-sm">
+                                  {type.label}
+                                </div>
                               </CardContent>
                             </Card>
                           ))}
@@ -358,12 +455,16 @@ ${formData.message}
                                 variant="outline"
                                 className={cn(
                                   "w-full justify-start text-left font-normal mt-2",
-                                  !date && "text-muted-foreground"
+                                  !date && "text-muted-foreground",
                                 )}
                                 disabled={isSubmitting}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                {date ? (
+                                  format(date, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0">
@@ -371,7 +472,11 @@ ${formData.message}
                                 mode="single"
                                 selected={date}
                                 onSelect={setDate}
-                                disabled={(date) => date < new Date() || date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                disabled={(date) =>
+                                  date < new Date() ||
+                                  date <
+                                    new Date(new Date().setHours(0, 0, 0, 0))
+                                }
                                 initialFocus
                                 className="pointer-events-auto"
                               />
@@ -381,9 +486,11 @@ ${formData.message}
 
                         <div>
                           <Label>Preferred Time *</Label>
-                          <Select 
-                            value={formData.timeSlot} 
-                            onValueChange={(value) => handleChange("timeSlot", value)}
+                          <Select
+                            value={formData.timeSlot}
+                            onValueChange={(value) =>
+                              handleChange("timeSlot", value)
+                            }
                             disabled={isSubmitting}
                           >
                             <SelectTrigger className="mt-2">
@@ -391,7 +498,9 @@ ${formData.message}
                             </SelectTrigger>
                             <SelectContent>
                               {timeSlots.map((slot) => (
-                                <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                                <SelectItem key={slot} value={slot}>
+                                  {slot}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -399,11 +508,15 @@ ${formData.message}
                       </div>
 
                       <div>
-                        <Label htmlFor="message">Brief Description of Your Legal Matter</Label>
+                        <Label htmlFor="message">
+                          Brief Description of Your Legal Matter
+                        </Label>
                         <Textarea
                           id="message"
                           value={formData.message}
-                          onChange={(e) => handleChange("message", e.target.value)}
+                          onChange={(e) =>
+                            handleChange("message", e.target.value)
+                          }
                           rows={4}
                           className="mt-2"
                           placeholder="Please provide a brief overview of your legal needs..."
@@ -422,7 +535,9 @@ ${formData.message}
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {isCheckingConflicts ? "Checking Availability..." : "Booking Consultation..."}
+                        {isCheckingConflicts
+                          ? "Checking Availability..."
+                          : "Booking Consultation..."}
                       </>
                     ) : (
                       "Schedule Consultation"
@@ -430,7 +545,8 @@ ${formData.message}
                   </Button>
 
                   <p className="text-xs text-muted-foreground text-center">
-                    By submitting this form, you agree to our privacy policy. Your information will be kept confidential.
+                    By submitting this form, you agree to our privacy policy.
+                    Your information will be kept confidential.
                   </p>
                 </form>
               </CardContent>
@@ -438,7 +554,9 @@ ${formData.message}
 
             {/* Alternative Contact Section */}
             <div className="mt-8 text-center">
-              <p className="text-muted-foreground mb-4">Prefer to contact us directly?</p>
+              <p className="text-muted-foreground mb-4">
+                Prefer to contact us directly?
+              </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="tel:+254727783214">
                   <Button variant="outline" size="lg" className="gap-2">
@@ -470,20 +588,27 @@ ${formData.message}
                 {
                   step: "1",
                   title: "Confirmation",
-                  description: "You'll receive an email confirmation with details about your consultation.",
+                  description:
+                    "You'll receive an email confirmation with details about your consultation.",
                 },
                 {
                   step: "2",
                   title: "Preparation",
-                  description: "We'll review your case details and match you with the best advocate for your needs.",
+                  description:
+                    "We'll review your case details and match you with the best advocate for your needs.",
                 },
                 {
                   step: "3",
                   title: "Consultation",
-                  description: "Meet with your advocate to discuss your case and explore your legal options.",
+                  description:
+                    "Meet with your advocate to discuss your case and explore your legal options.",
                 },
               ].map((item, index) => (
-                <div key={index} className="text-center animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+                <div
+                  key={index}
+                  className="text-center animate-slide-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent flex items-center justify-center">
                     <span className="text-2xl font-display font-bold text-accent-foreground">
                       {item.step}
