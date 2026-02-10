@@ -10,6 +10,8 @@ import { clientsApi } from '@/features/Clients/clientApi';
 import { appointmentsApi } from '@/features/Appointments/appointmentsApi';
 import { hearingsApi } from '@/features/Hearings/hearingsApi';
 import { notificationsApi } from '@/features/Alerts/alertApi';
+import { usersApi } from '@/features/Users/usersApi';
+import {caseTeamApi} from '@/features/Team/teamApi'
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -21,6 +23,8 @@ const rootReducer = combineReducers({
     [appointmentsApi.reducerPath]: appointmentsApi.reducer,
     [hearingsApi.reducerPath]: hearingsApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
+    [caseTeamApi.reducerPath]: caseTeamApi.reducer,
 });
 
 const persistConfig = {
@@ -36,7 +40,8 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         (getDefaultMiddleware() as any ).concat(casesApi.middleware).concat(registrationApi.middleware)
     .concat(passwordResetApi.middleware).concat(documentsApi.middleware).concat(clientsApi.middleware)
-    .concat(appointmentsApi.middleware).concat(hearingsApi.middleware).concat(notificationsApi.middleware),
+    .concat(appointmentsApi.middleware).concat(hearingsApi.middleware).concat(notificationsApi.middleware)
+    .concat(usersApi.middleware).concat(caseTeamApi.middleware),
 }) as any;
 
 export const persistor = persistStore(store);

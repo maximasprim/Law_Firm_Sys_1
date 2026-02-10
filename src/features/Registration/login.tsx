@@ -54,17 +54,17 @@ const handlePostLoginNavigation = (decoded: CustomJwtPayload, navigate: any) => 
   const role = decoded.role.toLowerCase();
   
   if (role === 'admin') {
-    navigate('/admin-dashboard');
+    navigate('/admin/dashboard');
   } else if (role === 'senior_advocate' || role === 'advocate') {
-    navigate('/advocate-dashboard');
+    navigate('/admin/dashboard');
   } else if (role === 'client') {
-    navigate('/client-dashboard');
+    navigate('/');
   } else if (role === 'paralegal' || role === 'legal_assistant') {
     navigate('/staff-dashboard');
   } else if (role === 'secretary' || role === 'accountant') {
     navigate('/office-dashboard');
   } else {
-    navigate('/dashboard');
+    navigate('/');
   }
 };
 

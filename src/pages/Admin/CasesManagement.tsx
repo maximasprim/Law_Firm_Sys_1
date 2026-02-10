@@ -45,6 +45,8 @@ import { useCreateCaseTeamMemberMutation } from "../../features/Team/teamApi";
 import { useGetDocumentsQuery } from "../../features/Documents/documentsApi";
 import { toast, Toaster } from "react-hot-toast";
 import { useGetClientsQuery } from "../../features/Clients/clientApi";
+import { useGetUsersQuery } from "../../features/Users/usersApi";
+import { parse } from "path";
 
 interface CasesManagementProps {
   triggerNewCase?: boolean;
@@ -1377,6 +1379,8 @@ const CaseModal = ({ case_, onClose, onSave }) => {
 
 // Add Team Member Modal Component
 const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
+  const { data: users, error, isLoading } = useGetUsersQuery();
+
   const [formData, setFormData] = useState({
     case_id: case_.case_id,
     user_id: "",
@@ -1387,11 +1391,26 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validate that user_id is selected and is a valid number
+    if (!formData.user_id || formData.user_id === "" || formData.user_id === "0") {
+      toast.error("Please select a team member");
+      return;
+    }
+
     if (!formData.user_id || !formData.role) {
       toast.error("Please fill in required fields");
       return;
     }
-    onSave(formData);
+    // Create the data object with proper types
+    const submitData = {
+      case_id: case_.case_id,
+      user_id: parseInt(formData.user_id), // Parse to integer here
+      role: formData.role,
+      ...(formData.hourly_rate && { hourly_rate: formData.hourly_rate }),
+      ...(formData.responsibilities && { responsibilities: formData.responsibilities }),
+    };
+    
+    onSave(submitData);
   };
 
   return (
@@ -1423,18 +1442,25 @@ const AddTeamMemberModal = ({ case_, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-              User ID <span className="text-red-500">*</span>
+              New Team Member <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
+            <select
               value={formData.user_id}
               onChange={(e) =>
                 setFormData({ ...formData, user_id: e.target.value })
               }
-              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-              placeholder="Enter user ID"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 bg-white"
               required
-            />
+            >
+              <option value="">Select a member</option>
+              {isLoading && <option value="">Loading users...</option>}
+              {error && <option value="">Error loading users</option>}
+              {users?.map((user) => (
+                <option key={user.user_id} value={user.user_id}>
+                  {user.full_name} ({user.email}) - {user.role}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

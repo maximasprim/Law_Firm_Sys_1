@@ -168,7 +168,7 @@ const PracticeAreas = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-20">
+      <section className="gradient-hero text-primary-foreground py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
