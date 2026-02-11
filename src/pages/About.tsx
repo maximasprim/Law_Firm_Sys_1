@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Award, Users, Target, Heart, TrendingUp, Globe, Shield, CheckCircle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import aboutImage from "@/assets/about-justice.jpg";
+import bg from '@/assets/act-vs-law.jpg';
+
 
 const About = () => {
   const values = [
@@ -45,8 +47,23 @@ const About = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section
+        className="relative text-primary-foreground py-16 overflow-hidden"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Blurred image layer */}
+        {/* <div className="absolute inset-0 backdrop-blur-md"></div> */}
+
+        {/* Gradient overlay to maintain accent feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/90"></div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
               About Owino Kojo & Co. Advocates
@@ -83,9 +100,9 @@ const About = () => {
             </div>
             <div className="relative animate-scale-in">
               <div className="aspect-video rounded-2xl overflow-hidden shadow-elegant">
-                <img 
-                  src={aboutImage} 
-                  alt="Justice and law concept" 
+                <img
+                  src={aboutImage}
+                  alt="Justice and law concept"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -147,8 +164,8 @@ const About = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {values.map((value, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="text-center hover:shadow-elegant transition-all duration-300 border-border hover:border-accent animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -184,8 +201,8 @@ const About = () => {
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {milestones.map((milestone, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="flex gap-6 items-start animate-slide-up group"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >

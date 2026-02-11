@@ -63,8 +63,8 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 mt-0.5 opacity-80" />
                 <span className="text-sm opacity-80">
-                  West End Towers<br />
-                  2nd Floor, Waiyaki Way, Westlands
+                  Lower Hill Duplex<br />
+                  2nd Floor, Upper Hill, Nairobi
                 </span>
               </div>
               <div className="flex items-center gap-3">

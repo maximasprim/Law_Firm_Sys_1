@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, Award, Users, BookOpen, UserCog, FileText } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
+import bg from '@/assets/act-vs-law.jpg';
+
 
 const Advocates = () => {
   const partners = [
@@ -115,8 +117,23 @@ const Advocates = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section
+        className="relative text-primary-foreground py-16 overflow-hidden"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Blurred image layer */}
+        {/* <div className="absolute inset-0 backdrop-blur-md"></div> */}
+
+        {/* Gradient overlay to maintain accent feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/90"></div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
               Our Team
@@ -159,8 +176,8 @@ const Advocates = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {partners.map((advocate, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="group hover:shadow-elegant transition-all duration-300 border-border hover:border-accent animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -175,7 +192,7 @@ const Advocates = () => {
                     {advocate.name}
                   </h3>
                   <p className="text-accent font-semibold mb-2">{advocate.title}</p>
-                  
+
                   <div className="space-y-2 mb-4">
                     <Badge variant="secondary" className="mr-2">
                       {advocate.specialization}
@@ -230,8 +247,8 @@ const Advocates = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {associates.map((associate, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="hover:shadow-elegant transition-all duration-300 animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -336,8 +353,8 @@ const Advocates = () => {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {consultants.map((consultant, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="hover:shadow-elegant transition-all duration-300 animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >

@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, TrendingUp, Award, Building } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "@/components/NavLink";
+import bg from '@/assets/act-vs-law.jpg';
 
 const CaseResults = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -116,18 +117,33 @@ const CaseResults = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
-              Notable Cases & Matters
-            </h1>
-            <p className="text-xl opacity-90 leading-relaxed">
-              A proven track record of handling high-profile cases across Kenya's courts and tribunals
-            </p>
-          </div>
-        </div>
-      </section>
+      <section 
+  className="relative text-primary-foreground py-16 overflow-hidden"
+  style={{
+    backgroundImage: `url(${bg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  }}
+>
+  {/* Blurred image layer */}
+  {/* <div className="absolute inset-0 backdrop-blur-md"></div> */}
+  
+  {/* Gradient overlay to maintain accent feel */}
+  <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/90"></div>
+  
+  {/* Content */}
+  <div className="container mx-auto px-4 relative z-10">
+    <div className="max-w-3xl mx-auto text-center animate-fade-in">
+      <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
+        Notable Cases & Matters
+      </h1>
+      <p className="text-xl opacity-90 leading-relaxed">
+        A proven track record of handling high-profile cases across Kenya's courts and tribunals
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* Stats Section */}
       <section className="py-12 bg-muted/50">

@@ -7,15 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MapPin, Phone, Mail, Clock, Loader2, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  useGetContactInfoQuery, 
+import {
+  useGetContactInfoQuery,
   useSubmitContactFormMutation,
-  type ContactFormData 
+  type ContactFormData
 } from "@/features/Contact/contactApi";
+import bg from '@/assets/act-vs-law.jpg';
 
 const Contact = () => {
   const { toast } = useToast();
-  
+
   // RTK Query hooks
   const { data: contactInfo, isLoading: isLoadingInfo, error: infoError } = useGetContactInfoQuery();
   const [submitContactForm, { isLoading: isSubmitting }] = useSubmitContactFormMutation();
@@ -35,7 +36,7 @@ const Contact = () => {
     console.log('Form data being sent:', formData);
     try {
       const response = await submitContactForm(formData).unwrap();
-      
+
       toast({
         title: "Message Sent Successfully!",
         description: (
@@ -99,8 +100,8 @@ const Contact = () => {
 
   // Get contact data with fallbacks
   const contactData = {
-    address: contactInfo?.data?.contacts?.address || "West End Towers, 2nd Floor\nWaiyaki Way, Westlands",
-    phones: contactInfo?.data?.contacts?.phone || ["+254 727 783 214", "+254 202 270 000"],
+    address: contactInfo?.data?.contacts?.address || "Lower Hill Duplex, 2nd Floor\nUpper Hill, Nairobi",
+    phones: contactInfo?.data?.contacts?.phone || ["+254 727 783 214"],
     emails: contactInfo?.data?.contacts?.email || ["info@owinokojoadvocates.com", "consult@owinokojoadvocates.com"],
     officeHours: {
       weekdays: contactInfo?.data?.officeHours?.weekdays || "Mon-Fri: 8AM - 5PM",
@@ -112,8 +113,35 @@ const Contact = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-16">
+      {/* <section className="gradient-hero text-primary-foreground py-16">
         <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
+              Contact Us
+            </h1>
+            <p className="text-xl opacity-90 leading-relaxed">
+              Get in touch with our legal experts. We're here to help you navigate your legal challenges in Kenya.
+            </p>
+          </div>
+        </div>
+      </section> */}
+      <section
+        className="relative text-primary-foreground py-16 overflow-hidden"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Blurred image layer */}
+        {/* <div className="absolute inset-0 backdrop-blur-md"></div> */}
+
+        {/* Gradient overlay to maintain accent feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/90"></div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
               Contact Us
@@ -199,7 +227,7 @@ const Contact = () => {
                       required
                       className="mt-2"
                       disabled={isSubmitting}
-                      // placeholder="John"
+                    // placeholder="John"
                     />
                   </div>
                   <div>
@@ -211,7 +239,7 @@ const Contact = () => {
                       required
                       className="mt-2"
                       disabled={isSubmitting}
-                      // placeholder="Doe"
+                    // placeholder="Doe"
                     />
                   </div>
                 </div>
@@ -226,7 +254,7 @@ const Contact = () => {
                     required
                     className="mt-2"
                     disabled={isSubmitting}
-                    // placeholder="john.doe@example.com"
+                  // placeholder="john.doe@example.com"
                   />
                 </div>
 
@@ -245,8 +273,8 @@ const Contact = () => {
 
                 <div>
                   <Label htmlFor="subject">Subject *</Label>
-                  <Select 
-                    value={formData.subject} 
+                  <Select
+                    value={formData.subject}
                     onValueChange={(value) => handleChange("subject", value)}
                     disabled={isSubmitting || isLoadingInfo}
                   >
@@ -283,9 +311,9 @@ const Contact = () => {
                   />
                 </div>
 
-                <Button 
+                <Button
                   type="submit"
-                  size="lg" 
+                  size="lg"
                   className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-gold"
                   disabled={isSubmitting}
                 >
@@ -338,8 +366,8 @@ const Contact = () => {
                   <p className="opacity-90 mb-6">
                     Facing an urgent legal matter? Contact us immediately for prompt legal assistance and consultation.
                   </p>
-                  <Button 
-                    size="lg" 
+                  <Button
+                    size="lg"
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                     onClick={() => window.location.href = `tel:${contactData.phones[0]}`}
                     disabled={isLoadingInfo}
@@ -361,7 +389,7 @@ const Contact = () => {
       </section>
 
       {/* Map Section Placeholder */}
-      <section className="py-20 bg-muted/50">
+      {/* <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-8 text-center">
@@ -384,6 +412,33 @@ const Contact = () => {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </section> */}
+      <section className="py-8 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-8 text-center">
+              Find Us in Nairobi
+            </h2>
+            <div className="aspect-video rounded-2xl overflow-hidden shadow-elegant">
+              {isLoadingInfo ? (
+                <div className="bg-primary/5 flex items-center justify-center h-full">
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="text-muted-foreground">Loading location...</span>
+                  </div>
+                </div>
+              ) : (
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.792109900035!2d36.81764547408077!3d-1.299536835638881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1166edb58df7%3A0x332d7f34bb9d828e!2sLowerhill%20Duplex%20Building!5e0!3m2!1sen!2ske!4v1770785118504!5m2!1sen!2ske" width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+              )}
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-muted-foreground text-sm">
+                <MapPin className="h-4 w-4 inline mr-1" />
+                {contactData.address.replace('\n', ', ')}
+              </p>
             </div>
           </div>
         </div>

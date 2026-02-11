@@ -13,6 +13,7 @@ import employmentLawImg2 from "@/assets/employment-law07.34.41.jpg";
 import corporateLawImg from "@/assets/business-laws.jpg";
 import dataPrivacyImg from "@/assets/data-protection-alert.jpg";
 import propertyLawImg from "@/assets/title-deeds.jpg";
+import bg from '@/assets/act-vs-law.jpg';
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -115,15 +116,30 @@ const Blog = () => {
   const filteredPosts = blogPosts.filter(post => {
     const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-hero text-primary-foreground py-16">
-        <div className="container mx-auto px-4">
+      <section
+        className="relative text-primary-foreground py-16 overflow-hidden"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Blurred image layer */}
+        {/* <div className="absolute inset-0 backdrop-blur-md"></div> */}
+
+        {/* Gradient overlay to maintain accent feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/90"></div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
               Legal Resources & Insights
@@ -157,11 +173,10 @@ const Blog = () => {
                 <Badge
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
-                  className={`cursor-pointer px-4 py-2 text-sm ${
-                    selectedCategory === category
+                  className={`cursor-pointer px-4 py-2 text-sm ${selectedCategory === category
                       ? "bg-accent text-accent-foreground hover:bg-accent/90"
                       : "hover:bg-muted"
-                  }`}
+                    }`}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -195,8 +210,8 @@ const Blog = () => {
               >
                 {/* Actual Image */}
                 <div className="h-48 relative overflow-hidden">
-                  <img 
-                    src={post.image} 
+                  <img
+                    src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -212,7 +227,7 @@ const Blog = () => {
                   <h3 className="text-xl font-display font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </h3>
-                  
+
                   <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3 flex-1">
                     {post.excerpt}
                   </p>
@@ -233,9 +248,9 @@ const Blog = () => {
                       </div>
                     </div>
 
-                    <a 
-                      href={post.url} 
-                      target="_blank" 
+                    <a
+                      href={post.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block w-full"
                     >
